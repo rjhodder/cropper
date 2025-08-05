@@ -234,46 +234,40 @@
       box-shadow: var(--shadow-lg);
     }
 
-    .control-group h3 {
-      margin: 0 0 1rem 0;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      user-select: none;
-      transition: color 0.2s ease;
-    }
+         .control-group h3 {
+       margin: 0 0 1rem 0;
+       font-size: 1rem;
+       font-weight: 600;
+       color: var(--text);
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       gap: 0.5rem;
+       cursor: pointer;
+       user-select: none;
+       transition: all 0.2s ease;
+     }
 
-    .control-group h3:hover {
-      color: var(--accent);
-    }
+     .control-group h3:hover {
+       color: var(--accent);
+     }
 
-    .control-group h3::after {
-      content: '▼';
-      margin-left: auto;
-      font-size: 0.75rem;
-      transition: transform 0.3s ease;
-    }
+     .control-group h3 .collapse-icon {
+       font-size: 0.875rem;
+       transition: transform 0.2s ease;
+     }
 
-    .control-group.collapsed h3::after {
-      transform: rotate(-90deg);
-    }
+     .control-group.collapsed h3 .collapse-icon {
+       transform: rotate(-90deg);
+     }
 
-    .control-group .button-grid {
-      overflow: hidden;
-      transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
-      max-height: 500px;
-      opacity: 1;
-    }
+     .control-group.collapsed .button-grid {
+       display: none;
+     }
 
-    .control-group.collapsed .button-grid {
-      max-height: 0;
-      opacity: 0;
-      margin: 0;
-    }
+     .control-group.collapsed .filters-panel {
+       display: none !important;
+     }
 
     .button-grid {
       display: flex;
@@ -454,62 +448,16 @@
        font-size: 0.875rem;
      }
 
-           .intensity-value {
-        font-weight: 700;
-        font-size: 0.875rem;
-        color: var(--accent);
-        background: var(--accent-light);
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        min-width: 40px;
-        text-align: center;
-      }
-
-      .depth-of-field-control {
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--border);
-      }
-
-      .depth-header {
-        margin-bottom: 1rem;
-      }
-
-      .depth-header label {
-        font-weight: 600;
-        color: var(--text);
-        font-size: 0.875rem;
-      }
-
-      .depth-controls {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .depth-control-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      .depth-control-group label {
-        font-weight: 500;
-        color: var(--text);
-        font-size: 0.75rem;
-      }
-
-      .depth-value {
-        font-weight: 700;
-        font-size: 0.75rem;
-        color: var(--accent);
-        background: var(--accent-light);
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        min-width: 40px;
-        text-align: center;
-        align-self: flex-end;
-      }
+     .intensity-value {
+       font-weight: 700;
+       font-size: 0.875rem;
+       color: var(--accent);
+       background: var(--accent-light);
+       padding: 0.25rem 0.5rem;
+       border-radius: 4px;
+       min-width: 40px;
+       text-align: center;
+     }
 
            .rotation-controls {
        background: var(--bg-secondary);
@@ -768,160 +716,146 @@
     <div class="main-content">
       <div class="left-panel">
         <div class="controls" id="controlsSection" style="display: none;">
-          <div class="control-group">
-            <h3>🔄 Transform</h3>
-            <div class="button-grid">
-              <button onclick="rotateLeft()">↺ Rotate Left</button>
-              <button onclick="rotateRight()">↻ Rotate Right</button>
-              <button onclick="flipHorizontal()">⇋ Flip H</button>
-              <button onclick="flipVertical()">⇅ Flip V</button>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <h3>🔍 Zoom</h3>
-            <div class="button-grid">
-              <button onclick="zoomIn()">➕ Zoom In</button>
-              <button onclick="zoomOut()">➖ Zoom Out</button>
-              <button onclick="resetZoom()">🎯 Reset</button>
-              <button onclick="fitToContainer()">📐 Fit</button>
-            </div>
-          </div>
-
                      <div class="control-group">
-             <h3>⚙️ Settings</h3>
+             <h3 onclick="togglePanel(this.parentElement)">
+               <span>🔄 Transform</span>
+               <span class="collapse-icon">▼</span>
+             </h3>
              <div class="button-grid">
-               <button onclick="toggleAspectRatio()">🔒 Lock Aspect</button>
-               <button onclick="resetImage()">↩️ Reset All</button>
+               <button onclick="rotateLeft()">↺ Rotate Left</button>
+               <button onclick="rotateRight()">↻ Rotate Right</button>
+               <button onclick="flipHorizontal()">⇋ Flip H</button>
+               <button onclick="flipVertical()">⇅ Flip V</button>
              </div>
            </div>
 
            <div class="control-group">
-             <h3>🎨 Filters</h3>
+             <h3 onclick="togglePanel(this.parentElement)">
+               <span>🔍 Zoom</span>
+               <span class="collapse-icon">▼</span>
+             </h3>
              <div class="button-grid">
-               <button onclick="toggleFilters()" class="filter-toggle-btn">🎨 Quick Filters</button>
+               <button onclick="zoomIn()">➕ Zoom In</button>
+               <button onclick="zoomOut()">➖ Zoom Out</button>
+               <button onclick="resetZoom()">🎯 Reset</button>
+               <button onclick="fitToContainer()">📐 Fit</button>
              </div>
-                           <div class="filters-panel" id="filtersPanel" style="display: none;">
-                <div class="filter-grid">
-                  <button onclick="applyFilter('none')" class="filter-btn active" data-filter="none">
-                    <div class="filter-thumbnail">
-                      <span>🖼️</span>
-                    </div>
-                    <span>Original</span>
-                  </button>
-                  <button onclick="applyFilter('grayscale')" class="filter-btn" data-filter="grayscale">
-                    <div class="filter-thumbnail">
-                      <span>⚫</span>
-                    </div>
-                    <span>Grayscale</span>
-                  </button>
-                  <button onclick="applyFilter('sepia')" class="filter-btn" data-filter="sepia">
-                    <div class="filter-thumbnail">
-                      <span>🟤</span>
-                    </div>
-                    <span>Sepia</span>
-                  </button>
-                  <button onclick="applyFilter('invert')" class="filter-btn" data-filter="invert">
-                    <div class="filter-thumbnail">
-                      <span>⚪</span>
-                    </div>
-                    <span>Invert</span>
-                  </button>
-                  <button onclick="applyFilter('blur')" class="filter-btn" data-filter="blur">
-                    <div class="filter-thumbnail">
-                      <span>🌫️</span>
-                    </div>
-                    <span>Blur</span>
-                  </button>
-                  <button onclick="applyFilter('brightness')" class="filter-btn" data-filter="brightness">
-                    <div class="filter-thumbnail">
-                      <span>☀️</span>
-                    </div>
-                    <span>Bright</span>
-                  </button>
-                  <button onclick="applyFilter('contrast')" class="filter-btn" data-filter="contrast">
-                    <div class="filter-thumbnail">
-                      <span>🎭</span>
-                    </div>
-                    <span>Contrast</span>
-                  </button>
-                  <button onclick="applyFilter('saturate')" class="filter-btn" data-filter="saturate">
-                    <div class="filter-thumbnail">
-                      <span>🌈</span>
-                    </div>
-                    <span>Saturate</span>
-                  </button>
-                  <button onclick="applyFilter('hue-rotate')" class="filter-btn" data-filter="hue-rotate">
-                    <div class="filter-thumbnail">
-                      <span>🎨</span>
-                    </div>
-                    <span>Hue</span>
-                  </button>
-                  <button onclick="applyFilter('vintage')" class="filter-btn" data-filter="vintage">
-                    <div class="filter-thumbnail">
-                      <span>📷</span>
-                    </div>
-                    <span>Vintage</span>
-                  </button>
-                  <button onclick="applyFilter('warm')" class="filter-btn" data-filter="warm">
-                    <div class="filter-thumbnail">
-                      <span>🔥</span>
-                    </div>
-                    <span>Warm</span>
-                  </button>
-                                     <button onclick="applyFilter('cool')" class="filter-btn" data-filter="cool">
+           </div>
+
+                      <div class="control-group">
+              <h3 onclick="togglePanel(this.parentElement)">
+                <span>⚙️ Settings</span>
+                <span class="collapse-icon">▼</span>
+              </h3>
+              <div class="button-grid">
+                <button onclick="toggleAspectRatio()">🔒 Lock Aspect</button>
+                <button onclick="resetImage()">↩️ Reset All</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <h3 onclick="togglePanel(this.parentElement)">
+                <span>🎨 Filters</span>
+                <span class="collapse-icon">▼</span>
+              </h3>
+              <div class="button-grid">
+                <button onclick="toggleFilters()" class="filter-toggle-btn">🎨 Quick Filters</button>
+              </div>
+                            <div class="filters-panel" id="filtersPanel" style="display: none;">
+                 <div class="filter-grid">
+                   <button onclick="applyFilter('none')" class="filter-btn active" data-filter="none">
+                     <div class="filter-thumbnail">
+                       <span>🖼️</span>
+                     </div>
+                     <span>Original</span>
+                   </button>
+                   <button onclick="applyFilter('grayscale')" class="filter-btn" data-filter="grayscale">
+                     <div class="filter-thumbnail">
+                       <span>⚫</span>
+                     </div>
+                     <span>Grayscale</span>
+                   </button>
+                   <button onclick="applyFilter('sepia')" class="filter-btn" data-filter="sepia">
+                     <div class="filter-thumbnail">
+                       <span>🟤</span>
+                     </div>
+                     <span>Sepia</span>
+                   </button>
+                   <button onclick="applyFilter('invert')" class="filter-btn" data-filter="invert">
+                     <div class="filter-thumbnail">
+                       <span>⚪</span>
+                     </div>
+                     <span>Invert</span>
+                   </button>
+                   <button onclick="applyFilter('blur')" class="filter-btn" data-filter="blur">
+                     <div class="filter-thumbnail">
+                       <span>🌫️</span>
+                     </div>
+                     <span>Blur</span>
+                   </button>
+                   <button onclick="applyFilter('brightness')" class="filter-btn" data-filter="brightness">
+                     <div class="filter-thumbnail">
+                       <span>☀️</span>
+                     </div>
+                     <span>Bright</span>
+                   </button>
+                   <button onclick="applyFilter('contrast')" class="filter-btn" data-filter="contrast">
+                     <div class="filter-thumbnail">
+                       <span>🎭</span>
+                     </div>
+                     <span>Contrast</span>
+                   </button>
+                   <button onclick="applyFilter('saturate')" class="filter-btn" data-filter="saturate">
+                     <div class="filter-thumbnail">
+                       <span>🌈</span>
+                     </div>
+                     <span>Saturate</span>
+                   </button>
+                   <button onclick="applyFilter('hue-rotate')" class="filter-btn" data-filter="hue-rotate">
+                     <div class="filter-thumbnail">
+                       <span>🎨</span>
+                     </div>
+                     <span>Hue</span>
+                   </button>
+                   <button onclick="applyFilter('vintage')" class="filter-btn" data-filter="vintage">
+                     <div class="filter-thumbnail">
+                       <span>📷</span>
+                     </div>
+                     <span>Vintage</span>
+                   </button>
+                   <button onclick="applyFilter('warm')" class="filter-btn" data-filter="warm">
+                     <div class="filter-thumbnail">
+                       <span>🔥</span>
+                     </div>
+                     <span>Warm</span>
+                   </button>
+                   <button onclick="applyFilter('cool')" class="filter-btn" data-filter="cool">
                      <div class="filter-thumbnail">
                        <span>❄️</span>
                      </div>
                      <span>Cool</span>
                    </button>
-                   <button onclick="applyFilter('depth-of-field')" class="filter-btn" data-filter="depth-of-field">
-                     <div class="filter-thumbnail">
-                       <span>🔍</span>
-                     </div>
-                     <span>Depth</span>
-                   </button>
-                </div>
-                                 <div class="filter-intensity-control">
+                 </div>
+                 <div class="filter-intensity-control">
                    <div class="intensity-header">
                      <label for="filterIntensity">Intensity</label>
-                     <span class="intensity-value" id="intensityValue">50%</span>
+                     <span class="intensity-value" id="intensityValue">100%</span>
                    </div>
-                   <input type="range" id="filterIntensity" min="0" max="100" value="50" />
+                   <input type="range" id="filterIntensity" min="0" max="100" value="100" />
                  </div>
-                 
-                 <div class="depth-of-field-control" id="depthOfFieldControl" style="display: none;">
-                   <div class="depth-header">
-                     <label>Depth of Field Settings</label>
-                   </div>
-                   <div class="depth-controls">
-                     <div class="depth-control-group">
-                       <label for="focalPointX">Focal Point X (%)</label>
-                       <input type="range" id="focalPointX" min="0" max="100" value="50" />
-                       <span class="depth-value" id="focalPointXValue">50%</span>
-                     </div>
-                     <div class="depth-control-group">
-                       <label for="focalPointY">Focal Point Y (%)</label>
-                       <input type="range" id="focalPointY" min="0" max="100" value="50" />
-                       <span class="depth-value" id="focalPointYValue">50%</span>
-                     </div>
-                     <div class="depth-control-group">
-                       <label for="focalRange">Focal Range</label>
-                       <input type="range" id="focalRange" min="10" max="200" value="50" />
-                       <span class="depth-value" id="focalRangeValue">50px</span>
-                     </div>
-                   </div>
-                 </div>
-              </div>
-           </div>
-
-          <div class="control-group">
-            <h3>💾 Export</h3>
-            <div class="button-grid">
-              <button class="primary-button" onclick="download()">⬇️ Download PNG</button>
-              <button onclick="downloadJPG()">📷 Download JPG</button>
+               </div>
             </div>
-          </div>
+
+           <div class="control-group">
+             <h3 onclick="togglePanel(this.parentElement)">
+               <span>💾 Export</span>
+               <span class="collapse-icon">▼</span>
+             </h3>
+             <div class="button-grid">
+               <button class="primary-button" onclick="download()">⬇️ Download PNG</button>
+               <button onclick="downloadJPG()">📷 Download JPG</button>
+             </div>
+           </div>
 
           
         </div>
@@ -976,16 +910,9 @@
      const imageContainer = document.getElementById('imageContainer');
      const controlsSection = document.getElementById('controlsSection');
      const rotationSection = document.getElementById('rotationSection');
-           const filtersPanel = document.getElementById('filtersPanel');
-      const filterIntensity = document.getElementById('filterIntensity');
-      const intensityValue = document.getElementById('intensityValue');
-      const depthOfFieldControl = document.getElementById('depthOfFieldControl');
-      const focalPointX = document.getElementById('focalPointX');
-      const focalPointY = document.getElementById('focalPointY');
-      const focalRange = document.getElementById('focalRange');
-      const focalPointXValue = document.getElementById('focalPointXValue');
-      const focalPointYValue = document.getElementById('focalPointYValue');
-      const focalRangeValue = document.getElementById('focalRangeValue');
+     const filtersPanel = document.getElementById('filtersPanel');
+     const filterIntensity = document.getElementById('filterIntensity');
+     const intensityValue = document.getElementById('intensityValue');
 
     // Enhanced file input handling with drag and drop
     fileInput.addEventListener('change', handleFileSelect);
@@ -1183,7 +1110,7 @@
        flippedV = false;
        fixedAspect = false;
        currentFilter = 'none';
-               currentIntensity = 50;
+       currentIntensity = 100;
        
        cropper.reset();
        rotationSlider.value = 0;
@@ -1192,25 +1119,15 @@
                // Reset image filters
         const image = document.getElementById('image');
         image.style.filter = 'none';
-        image.classList.remove('depth-of-field-effect');
-        image.classList.remove('depth-of-field-blur');
         
         // Reset cropper container filters
         const cropperContainer = document.querySelector('.cropper-container');
         if (cropperContainer) {
           cropperContainer.style.filter = 'none';
-          cropperContainer.classList.remove('depth-of-field-effect');
-          cropperContainer.classList.remove('depth-of-field-blur');
           const cropperCanvas = cropperContainer.querySelector('canvas');
           if (cropperCanvas) {
             cropperCanvas.style.filter = 'none';
           }
-        }
-        
-        // Remove depth of field style
-        const depthOfFieldStyle = document.getElementById('depth-of-field-style');
-        if (depthOfFieldStyle) {
-          depthOfFieldStyle.remove();
         }
        
        // Reset button appearances
@@ -1228,20 +1145,8 @@
        document.querySelector('.filter-btn').classList.add('active');
        
                // Reset intensity slider
-        filterIntensity.value = 50;
-        intensityValue.textContent = '50%';
-        
-        // Reset depth of field controls
-        depthOfFieldControl.style.display = 'none';
-        focalPointX.value = 50;
-        focalPointY.value = 50;
-        focalRange.value = 50;
-        focalPointXValue.textContent = '50%';
-        focalPointYValue.textContent = '50%';
-        focalRangeValue.textContent = '50px';
-        focalPointXVal = 50;
-        focalPointYVal = 50;
-        focalRangeVal = 50;
+        filterIntensity.value = 100;
+        intensityValue.textContent = '100%';
         
         // Regenerate filter thumbnails
         setTimeout(() => {
@@ -1290,12 +1195,9 @@
       link.click();
     }
 
-               // Filter functionality
-      let currentFilter = 'none';
-      let currentIntensity = 100;
-      let focalPointXVal = 50;
-      let focalPointYVal = 50;
-      let focalRangeVal = 50;
+         // Filter functionality
+     let currentFilter = 'none';
+     let currentIntensity = 100;
 
      function toggleFilters() {
        const panel = document.getElementById('filtersPanel');
@@ -1303,26 +1205,18 @@
        panel.style.display = isVisible ? 'none' : 'block';
      }
 
-           function applyFilter(filterType) {
-        if (!cropper) return;
-        
-        currentFilter = filterType;
-        
-        // Show/hide depth of field controls
-        if (filterType === 'depth-of-field') {
-          depthOfFieldControl.style.display = 'block';
-        } else {
-          depthOfFieldControl.style.display = 'none';
-        }
-        
-        applyCurrentFilter();
-        
-        // Update active button
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-          btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-      }
+     function applyFilter(filterType) {
+       if (!cropper) return;
+       
+       currentFilter = filterType;
+       applyCurrentFilter();
+       
+       // Update active button
+       document.querySelectorAll('.filter-btn').forEach(btn => {
+         btn.classList.remove('active');
+       });
+       event.target.classList.add('active');
+     }
 
            function applyCurrentFilter() {
         if (!cropper) return;
@@ -1363,17 +1257,12 @@
           case 'warm':
             filterValue = `sepia(${intensity * 30}%) saturate(${100 + intensity * 40}%) brightness(${100 + intensity * 10}%)`;
             break;
-                     case 'cool':
-             filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
-             break;
-           case 'depth-of-field':
-             // Depth of field effect will be applied via CSS custom properties
-             filterValue = 'none';
-             applyDepthOfFieldEffect();
-             return; // Exit early as we handle this separately
-           default:
-             filterValue = 'none';
-             break;
+          case 'cool':
+            filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
+            break;
+          default:
+            filterValue = 'none';
+            break;
         }
         
         // Apply filter to both image and cropper container
@@ -1395,7 +1284,7 @@
       function generateFilterThumbnails() {
         if (!cropper) return;
         
-                 const filters = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness', 'contrast', 'saturate', 'hue-rotate', 'vintage', 'warm', 'cool', 'depth-of-field'];
+        const filters = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness', 'contrast', 'saturate', 'hue-rotate', 'vintage', 'warm', 'cool'];
         
         filters.forEach(filterType => {
           const button = document.querySelector(`[data-filter="${filterType}"]`);
@@ -1456,15 +1345,12 @@
             case 'warm':
               filterValue = `sepia(${intensity * 30}%) saturate(${100 + intensity * 40}%) brightness(${100 + intensity * 10}%)`;
               break;
-                         case 'cool':
-               filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
-               break;
-             case 'depth-of-field':
-               filterValue = `blur(${intensity * 2}px)`;
-               break;
-             default:
-               filterValue = 'none';
-               break;
+            case 'cool':
+              filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
+              break;
+            default:
+              filterValue = 'none';
+              break;
           }
           
           img.style.filter = filterValue;
@@ -1475,134 +1361,37 @@
         });
       }
 
-             // Intensity slider event listener
-       filterIntensity.addEventListener('input', (e) => {
-         currentIntensity = parseInt(e.target.value);
-         intensityValue.textContent = `${currentIntensity}%`;
-         applyCurrentFilter();
-       });
+      // Intensity slider event listener
+      filterIntensity.addEventListener('input', (e) => {
+        currentIntensity = parseInt(e.target.value);
+        intensityValue.textContent = `${currentIntensity}%`;
+        applyCurrentFilter();
+      });
 
-       // Depth of field event listeners
-       focalPointX.addEventListener('input', (e) => {
-         focalPointXVal = parseInt(e.target.value);
-         focalPointXValue.textContent = `${focalPointXVal}%`;
-         if (currentFilter === 'depth-of-field') {
-           applyDepthOfFieldEffect();
-         }
-       });
+           // Panel collapse functionality
+      function togglePanel(panel) {
+        panel.classList.toggle('collapsed');
+        
+        // Store panel state in localStorage
+        const panelId = panel.querySelector('h3 span').textContent.trim();
+        const isCollapsed = panel.classList.contains('collapsed');
+        localStorage.setItem(`panel_${panelId}`, isCollapsed ? 'collapsed' : 'expanded');
+      }
 
-       focalPointY.addEventListener('input', (e) => {
-         focalPointYVal = parseInt(e.target.value);
-         focalPointYValue.textContent = `${focalPointYVal}%`;
-         if (currentFilter === 'depth-of-field') {
-           applyDepthOfFieldEffect();
-         }
-       });
-
-       focalRange.addEventListener('input', (e) => {
-         focalRangeVal = parseInt(e.target.value);
-         focalRangeValue.textContent = `${focalRangeVal}px`;
-         if (currentFilter === 'depth-of-field') {
-           applyDepthOfFieldEffect();
-         }
-       });
-
-       function applyDepthOfFieldEffect() {
-         if (!cropper) return;
-         
-         const image = document.getElementById('image');
-         const cropperContainer = document.querySelector('.cropper-container');
-         
-         // Create a radial gradient mask for the depth of field effect
-         const intensity = currentIntensity / 100;
-         const maxBlur = intensity * 8; // Maximum blur amount
-         
-         // Set CSS custom properties for the depth of field effect
-         const style = document.createElement('style');
-         style.id = 'depth-of-field-style';
-         style.textContent = `
-           .depth-of-field-effect {
-             position: relative;
-           }
-           
-           .depth-of-field-effect::before {
-             content: '';
-             position: absolute;
-             top: 0;
-             left: 0;
-             right: 0;
-             bottom: 0;
-             background: radial-gradient(
-               circle at ${focalPointXVal}% ${focalPointYVal}%,
-               transparent ${focalRangeVal}px,
-               rgba(0,0,0,0.3) ${focalRangeVal + 50}px
-             );
-             pointer-events: none;
-             z-index: 1;
-           }
-           
-           .depth-of-field-blur {
-             filter: blur(${maxBlur}px);
-           }
-         `;
-         
-         // Remove existing style if it exists
-         const existingStyle = document.getElementById('depth-of-field-style');
-         if (existingStyle) {
-           existingStyle.remove();
-         }
-         
-         document.head.appendChild(style);
-         
-         // Apply the effect to both image and cropper container
-         image.classList.add('depth-of-field-effect');
-         image.classList.add('depth-of-field-blur');
-         if (cropperContainer) {
-           cropperContainer.classList.add('depth-of-field-effect');
-           cropperContainer.classList.add('depth-of-field-blur');
-         }
-       }
-
-     // Initialize collapsible panels
-     function initializeCollapsiblePanels() {
-       const controlGroups = document.querySelectorAll('.control-group');
-       
-       controlGroups.forEach(group => {
-         const header = group.querySelector('h3');
-         if (header) {
-           // Skip the filters panel as it has its own toggle functionality
-           const headerText = header.textContent.trim();
-           if (headerText.includes('🎨')) {
-             return;
-           }
-           
-           header.addEventListener('click', () => {
-             group.classList.toggle('collapsed');
-             
-             // Store collapse state in localStorage
-             const groupId = headerText;
-             const isCollapsed = group.classList.contains('collapsed');
-             localStorage.setItem(`panel_${groupId}`, isCollapsed);
-           });
-           
-           // Restore collapse state from localStorage
-           const groupId = headerText;
-           const isCollapsed = localStorage.getItem(`panel_${groupId}`) === 'true';
-           if (isCollapsed) {
-             group.classList.add('collapsed');
-           }
-         }
-       });
-     }
-
-     // Load saved theme preference and initialize collapsible panels
-     document.addEventListener('DOMContentLoaded', () => {
-       const savedTheme = localStorage.getItem('theme') || 'light';
-       body.setAttribute('data-theme', savedTheme);
-       
-       // Initialize collapsible panels
-       initializeCollapsiblePanels();
-     });
+      // Load saved theme preference
+      document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        body.setAttribute('data-theme', savedTheme);
+        
+        // Restore panel states
+        document.querySelectorAll('.control-group').forEach(panel => {
+          const panelId = panel.querySelector('h3 span').textContent.trim();
+          const savedState = localStorage.getItem(`panel_${panelId}`);
+          if (savedState === 'collapsed') {
+            panel.classList.add('collapsed');
+          }
+        });
+      });
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
