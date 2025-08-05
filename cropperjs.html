@@ -302,12 +302,107 @@
       font-weight: 600;
     }
 
-    .primary-button:hover {
-      background: var(--accent-hover) !important;
-      border-color: var(--accent-hover) !important;
-    }
+         .primary-button:hover {
+       background: var(--accent-hover) !important;
+       border-color: var(--accent-hover) !important;
+     }
 
-         .rotation-controls {
+     .filter-toggle-btn {
+       background: var(--accent) !important;
+       color: white !important;
+       border-color: var(--accent) !important;
+       font-weight: 600;
+     }
+
+     .filter-toggle-btn:hover {
+       background: var(--accent-hover) !important;
+       border-color: var(--accent-hover) !important;
+     }
+
+     .filters-panel {
+       margin-top: 1rem;
+       padding: 1rem;
+       background: var(--bg);
+       border: 1px solid var(--border);
+       border-radius: 8px;
+       animation: slideDown 0.3s ease-out;
+     }
+
+     @keyframes slideDown {
+       from {
+         opacity: 0;
+         transform: translateY(-10px);
+       }
+       to {
+         opacity: 1;
+         transform: translateY(0);
+       }
+     }
+
+     .filter-grid {
+       display: grid;
+       grid-template-columns: repeat(2, 1fr);
+       gap: 0.5rem;
+     }
+
+     .filter-btn {
+       padding: 0.5rem 0.75rem;
+       font-size: 0.75rem;
+       font-weight: 500;
+       border: 1px solid var(--border);
+       background: var(--btn-bg);
+       color: var(--btn-text);
+       border-radius: 6px;
+       cursor: pointer;
+       transition: all 0.2s ease;
+       text-align: center;
+     }
+
+     .filter-btn:hover {
+       background: var(--accent);
+       color: white;
+       border-color: var(--accent);
+       transform: translateY(-1px);
+     }
+
+          .filter-btn.active {
+       background: var(--accent);
+       color: white;
+       border-color: var(--accent);
+       font-weight: 600;
+     }
+
+     .filter-intensity-control {
+       margin-top: 1rem;
+       padding-top: 1rem;
+       border-top: 1px solid var(--border);
+     }
+
+     .intensity-header {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       margin-bottom: 0.5rem;
+     }
+
+     .intensity-header label {
+       font-weight: 600;
+       color: var(--text);
+       font-size: 0.875rem;
+     }
+
+     .intensity-value {
+       font-weight: 700;
+       font-size: 0.875rem;
+       color: var(--accent);
+       background: var(--accent-light);
+       padding: 0.25rem 0.5rem;
+       border-radius: 4px;
+       min-width: 40px;
+       text-align: center;
+     }
+
+           .rotation-controls {
        background: var(--bg-secondary);
        border-radius: 12px;
        padding: 1.5rem;
@@ -537,12 +632,17 @@
       scroll-behavior: smooth;
     }
 
-    /* Focus styles for accessibility */
-    button:focus,
-    input:focus {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
+         /* Focus styles for accessibility */
+     button:focus,
+     input:focus {
+       outline: 2px solid var(--accent);
+       outline-offset: 2px;
+     }
+
+     /* Ensure filters are visible on cropper */
+     .cropper-container {
+       filter: inherit;
+     }
   </style>
 </head>
 <body data-theme="light">
@@ -579,13 +679,43 @@
             </div>
           </div>
 
-          <div class="control-group">
-            <h3>⚙️ Settings</h3>
-            <div class="button-grid">
-              <button onclick="toggleAspectRatio()">🔒 Lock Aspect</button>
-              <button onclick="resetImage()">↩️ Reset All</button>
-            </div>
-          </div>
+                     <div class="control-group">
+             <h3>⚙️ Settings</h3>
+             <div class="button-grid">
+               <button onclick="toggleAspectRatio()">🔒 Lock Aspect</button>
+               <button onclick="resetImage()">↩️ Reset All</button>
+             </div>
+           </div>
+
+           <div class="control-group">
+             <h3>🎨 Filters</h3>
+             <div class="button-grid">
+               <button onclick="toggleFilters()" class="filter-toggle-btn">🎨 Quick Filters</button>
+             </div>
+                           <div class="filters-panel" id="filtersPanel" style="display: none;">
+                <div class="filter-grid">
+                  <button onclick="applyFilter('none')" class="filter-btn active">Original</button>
+                  <button onclick="applyFilter('grayscale')" class="filter-btn">Grayscale</button>
+                  <button onclick="applyFilter('sepia')" class="filter-btn">Sepia</button>
+                  <button onclick="applyFilter('invert')" class="filter-btn">Invert</button>
+                  <button onclick="applyFilter('blur')" class="filter-btn">Blur</button>
+                  <button onclick="applyFilter('brightness')" class="filter-btn">Bright</button>
+                  <button onclick="applyFilter('contrast')" class="filter-btn">Contrast</button>
+                  <button onclick="applyFilter('saturate')" class="filter-btn">Saturate</button>
+                  <button onclick="applyFilter('hue-rotate')" class="filter-btn">Hue</button>
+                  <button onclick="applyFilter('vintage')" class="filter-btn">Vintage</button>
+                  <button onclick="applyFilter('warm')" class="filter-btn">Warm</button>
+                  <button onclick="applyFilter('cool')" class="filter-btn">Cool</button>
+                </div>
+                <div class="filter-intensity-control">
+                  <div class="intensity-header">
+                    <label for="filterIntensity">Intensity</label>
+                    <span class="intensity-value" id="intensityValue">100%</span>
+                  </div>
+                  <input type="range" id="filterIntensity" min="0" max="100" value="100" />
+                </div>
+              </div>
+           </div>
 
           <div class="control-group">
             <h3>💾 Export</h3>
@@ -648,6 +778,9 @@
      const imageContainer = document.getElementById('imageContainer');
      const controlsSection = document.getElementById('controlsSection');
      const rotationSection = document.getElementById('rotationSection');
+     const filtersPanel = document.getElementById('filtersPanel');
+     const filterIntensity = document.getElementById('filterIntensity');
+     const intensityValue = document.getElementById('intensityValue');
 
     // Enhanced file input handling with drag and drop
     fileInput.addEventListener('change', handleFileSelect);
@@ -705,23 +838,30 @@
          controlsSection.style.display = 'flex';
          rotationSection.style.display = 'block';
 
-        // Initialize cropper
-        if (cropper) cropper.destroy();
-        cropper = new Cropper(image, {
-          viewMode: 1,
-          dragMode: 'move',
-          autoCropArea: 1,
-          responsive: true,
-          background: false,
-          checkOrientation: false,
-          modal: true,
-          guides: true,
-          center: true,
-          highlight: false,
-          cropBoxMovable: true,
-          cropBoxResizable: true,
-          toggleDragModeOnDblclick: false,
-        });
+                 // Initialize cropper
+         if (cropper) cropper.destroy();
+         cropper = new Cropper(image, {
+           viewMode: 1,
+           dragMode: 'move',
+           autoCropArea: 1,
+           responsive: true,
+           background: false,
+           checkOrientation: false,
+           modal: true,
+           guides: true,
+           center: true,
+           highlight: false,
+           cropBoxMovable: true,
+           cropBoxResizable: true,
+           toggleDragModeOnDblclick: false,
+         });
+         
+         // Apply any existing filter after cropper is initialized
+         setTimeout(() => {
+           if (currentFilter !== 'none') {
+             applyCurrentFilter();
+           }
+         }, 100);
 
                  // Reset states
          currentRotation = 0;
@@ -827,30 +967,56 @@
       button.textContent = fixedAspect ? '🔓 Unlock Aspect' : '🔒 Lock Aspect';
     }
 
-    function resetImage() {
-      if (!cropper) return;
-      
-      // Reset all transformations
-      currentRotation = 0;
-      flippedH = false;
-      flippedV = false;
-      fixedAspect = false;
-      
-             cropper.reset();
+         function resetImage() {
+       if (!cropper) return;
+       
+       // Reset all transformations
+       currentRotation = 0;
+       flippedH = false;
+       flippedV = false;
+       fixedAspect = false;
+       currentFilter = 'none';
+       currentIntensity = 100;
+       
+       cropper.reset();
        rotationSlider.value = 0;
        rotationInput.value = 0;
-      
-      // Reset button appearances
-      document.querySelectorAll('.controls button').forEach(btn => {
-        if (!btn.classList.contains('primary-button')) {
-          btn.style.background = 'var(--btn-bg)';
-          btn.style.color = 'var(--btn-text)';
+       
+               // Reset image filters
+        const image = document.getElementById('image');
+        image.style.filter = 'none';
+        
+        // Reset cropper container filters
+        const cropperContainer = document.querySelector('.cropper-container');
+        if (cropperContainer) {
+          cropperContainer.style.filter = 'none';
+          const cropperCanvas = cropperContainer.querySelector('canvas');
+          if (cropperCanvas) {
+            cropperCanvas.style.filter = 'none';
+          }
         }
-      });
-      
-      // Reset button texts
-      document.querySelector('button[onclick="toggleAspectRatio()"]').textContent = '🔒 Lock Aspect';
-    }
+       
+       // Reset button appearances
+       document.querySelectorAll('.controls button').forEach(btn => {
+         if (!btn.classList.contains('primary-button')) {
+           btn.style.background = 'var(--btn-bg)';
+           btn.style.color = 'var(--btn-text)';
+         }
+       });
+       
+       // Reset filter buttons
+       document.querySelectorAll('.filter-btn').forEach(btn => {
+         btn.classList.remove('active');
+       });
+       document.querySelector('.filter-btn').classList.add('active');
+       
+       // Reset intensity slider
+       filterIntensity.value = 100;
+       intensityValue.textContent = '100%';
+       
+       // Reset button texts
+       document.querySelector('button[onclick="toggleAspectRatio()"]').textContent = '🔒 Lock Aspect';
+     }
 
     function toggleTheme() {
       const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -890,11 +1056,103 @@
       link.click();
     }
 
-    // Load saved theme preference
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      body.setAttribute('data-theme', savedTheme);
-    });
+         // Filter functionality
+     let currentFilter = 'none';
+     let currentIntensity = 100;
+
+     function toggleFilters() {
+       const panel = document.getElementById('filtersPanel');
+       const isVisible = panel.style.display !== 'none';
+       panel.style.display = isVisible ? 'none' : 'block';
+     }
+
+     function applyFilter(filterType) {
+       if (!cropper) return;
+       
+       currentFilter = filterType;
+       applyCurrentFilter();
+       
+       // Update active button
+       document.querySelectorAll('.filter-btn').forEach(btn => {
+         btn.classList.remove('active');
+       });
+       event.target.classList.add('active');
+     }
+
+           function applyCurrentFilter() {
+        if (!cropper) return;
+        
+        const image = document.getElementById('image');
+        const intensity = currentIntensity / 100;
+        let filterValue = 'none';
+        
+        // Apply the selected filter with intensity
+        switch(currentFilter) {
+          case 'grayscale':
+            filterValue = `grayscale(${intensity * 100}%)`;
+            break;
+          case 'sepia':
+            filterValue = `sepia(${intensity * 100}%)`;
+            break;
+          case 'invert':
+            filterValue = `invert(${intensity * 100}%)`;
+            break;
+          case 'blur':
+            filterValue = `blur(${intensity * 4}px)`;
+            break;
+          case 'brightness':
+            filterValue = `brightness(${100 + intensity * 100}%)`;
+            break;
+          case 'contrast':
+            filterValue = `contrast(${100 + intensity * 100}%)`;
+            break;
+          case 'saturate':
+            filterValue = `saturate(${100 + intensity * 200}%)`;
+            break;
+          case 'hue-rotate':
+            filterValue = `hue-rotate(${intensity * 360}deg)`;
+            break;
+          case 'vintage':
+            filterValue = `sepia(${intensity * 50}%) contrast(${100 + intensity * 20}%) brightness(${100 - intensity * 10}%)`;
+            break;
+          case 'warm':
+            filterValue = `sepia(${intensity * 30}%) saturate(${100 + intensity * 40}%) brightness(${100 + intensity * 10}%)`;
+            break;
+          case 'cool':
+            filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
+            break;
+          default:
+            filterValue = 'none';
+            break;
+        }
+        
+        // Apply filter to both image and cropper container
+        image.style.filter = filterValue;
+        
+        // Apply to cropper container and all its children
+        const cropperContainer = document.querySelector('.cropper-container');
+        if (cropperContainer) {
+          cropperContainer.style.filter = filterValue;
+          // Also apply to the cropper canvas
+          const cropperCanvas = cropperContainer.querySelector('canvas');
+          if (cropperCanvas) {
+            cropperCanvas.style.filter = filterValue;
+          }
+        }
+      }
+
+     // Intensity slider event listener
+     filterIntensity.addEventListener('input', (e) => {
+       currentIntensity = parseInt(e.target.value);
+       intensityValue.textContent = `${currentIntensity}%`;
+       applyCurrentFilter();
+     });
+
+     // Load saved theme preference
+     document.addEventListener('DOMContentLoaded', () => {
+       const savedTheme = localStorage.getItem('theme') || 'light';
+       body.setAttribute('data-theme', savedTheme);
+     });
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
