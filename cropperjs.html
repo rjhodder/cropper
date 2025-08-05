@@ -339,24 +339,56 @@
        }
      }
 
-     .filter-grid {
-       display: grid;
-       grid-template-columns: repeat(2, 1fr);
-       gap: 0.5rem;
-     }
+           .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+      }
 
-     .filter-btn {
-       padding: 0.5rem 0.75rem;
-       font-size: 0.75rem;
-       font-weight: 500;
-       border: 1px solid var(--border);
-       background: var(--btn-bg);
-       color: var(--btn-text);
-       border-radius: 6px;
-       cursor: pointer;
-       transition: all 0.2s ease;
-       text-align: center;
-     }
+      .filter-btn {
+        padding: 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid var(--border);
+        background: var(--btn-bg);
+        color: var(--btn-text);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 80px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .filter-thumbnail {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        background: var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .filter-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+
+      .filter-btn.active .filter-thumbnail {
+        border: 2px solid var(--accent);
+      }
 
      .filter-btn:hover {
        background: var(--accent);
@@ -694,18 +726,78 @@
              </div>
                            <div class="filters-panel" id="filtersPanel" style="display: none;">
                 <div class="filter-grid">
-                  <button onclick="applyFilter('none')" class="filter-btn active">Original</button>
-                  <button onclick="applyFilter('grayscale')" class="filter-btn">Grayscale</button>
-                  <button onclick="applyFilter('sepia')" class="filter-btn">Sepia</button>
-                  <button onclick="applyFilter('invert')" class="filter-btn">Invert</button>
-                  <button onclick="applyFilter('blur')" class="filter-btn">Blur</button>
-                  <button onclick="applyFilter('brightness')" class="filter-btn">Bright</button>
-                  <button onclick="applyFilter('contrast')" class="filter-btn">Contrast</button>
-                  <button onclick="applyFilter('saturate')" class="filter-btn">Saturate</button>
-                  <button onclick="applyFilter('hue-rotate')" class="filter-btn">Hue</button>
-                  <button onclick="applyFilter('vintage')" class="filter-btn">Vintage</button>
-                  <button onclick="applyFilter('warm')" class="filter-btn">Warm</button>
-                  <button onclick="applyFilter('cool')" class="filter-btn">Cool</button>
+                  <button onclick="applyFilter('none')" class="filter-btn active" data-filter="none">
+                    <div class="filter-thumbnail">
+                      <span>🖼️</span>
+                    </div>
+                    <span>Original</span>
+                  </button>
+                  <button onclick="applyFilter('grayscale')" class="filter-btn" data-filter="grayscale">
+                    <div class="filter-thumbnail">
+                      <span>⚫</span>
+                    </div>
+                    <span>Grayscale</span>
+                  </button>
+                  <button onclick="applyFilter('sepia')" class="filter-btn" data-filter="sepia">
+                    <div class="filter-thumbnail">
+                      <span>🟤</span>
+                    </div>
+                    <span>Sepia</span>
+                  </button>
+                  <button onclick="applyFilter('invert')" class="filter-btn" data-filter="invert">
+                    <div class="filter-thumbnail">
+                      <span>⚪</span>
+                    </div>
+                    <span>Invert</span>
+                  </button>
+                  <button onclick="applyFilter('blur')" class="filter-btn" data-filter="blur">
+                    <div class="filter-thumbnail">
+                      <span>🌫️</span>
+                    </div>
+                    <span>Blur</span>
+                  </button>
+                  <button onclick="applyFilter('brightness')" class="filter-btn" data-filter="brightness">
+                    <div class="filter-thumbnail">
+                      <span>☀️</span>
+                    </div>
+                    <span>Bright</span>
+                  </button>
+                  <button onclick="applyFilter('contrast')" class="filter-btn" data-filter="contrast">
+                    <div class="filter-thumbnail">
+                      <span>🎭</span>
+                    </div>
+                    <span>Contrast</span>
+                  </button>
+                  <button onclick="applyFilter('saturate')" class="filter-btn" data-filter="saturate">
+                    <div class="filter-thumbnail">
+                      <span>🌈</span>
+                    </div>
+                    <span>Saturate</span>
+                  </button>
+                  <button onclick="applyFilter('hue-rotate')" class="filter-btn" data-filter="hue-rotate">
+                    <div class="filter-thumbnail">
+                      <span>🎨</span>
+                    </div>
+                    <span>Hue</span>
+                  </button>
+                  <button onclick="applyFilter('vintage')" class="filter-btn" data-filter="vintage">
+                    <div class="filter-thumbnail">
+                      <span>📷</span>
+                    </div>
+                    <span>Vintage</span>
+                  </button>
+                  <button onclick="applyFilter('warm')" class="filter-btn" data-filter="warm">
+                    <div class="filter-thumbnail">
+                      <span>🔥</span>
+                    </div>
+                    <span>Warm</span>
+                  </button>
+                  <button onclick="applyFilter('cool')" class="filter-btn" data-filter="cool">
+                    <div class="filter-thumbnail">
+                      <span>❄️</span>
+                    </div>
+                    <span>Cool</span>
+                  </button>
                 </div>
                 <div class="filter-intensity-control">
                   <div class="intensity-header">
@@ -856,12 +948,14 @@
            toggleDragModeOnDblclick: false,
          });
          
-         // Apply any existing filter after cropper is initialized
-         setTimeout(() => {
-           if (currentFilter !== 'none') {
-             applyCurrentFilter();
-           }
-         }, 100);
+               // Apply any existing filter after cropper is initialized
+      setTimeout(() => {
+        if (currentFilter !== 'none') {
+          applyCurrentFilter();
+        }
+        // Generate filter thumbnails
+        generateFilterThumbnails();
+      }, 100);
 
                  // Reset states
          currentRotation = 0;
@@ -1010,9 +1104,14 @@
        });
        document.querySelector('.filter-btn').classList.add('active');
        
-       // Reset intensity slider
-       filterIntensity.value = 100;
-       intensityValue.textContent = '100%';
+               // Reset intensity slider
+        filterIntensity.value = 100;
+        intensityValue.textContent = '100%';
+        
+        // Regenerate filter thumbnails
+        setTimeout(() => {
+          generateFilterThumbnails();
+        }, 200);
        
        // Reset button texts
        document.querySelector('button[onclick="toggleAspectRatio()"]').textContent = '🔒 Lock Aspect';
@@ -1141,12 +1240,93 @@
         }
       }
 
-     // Intensity slider event listener
-     filterIntensity.addEventListener('input', (e) => {
-       currentIntensity = parseInt(e.target.value);
-       intensityValue.textContent = `${currentIntensity}%`;
-       applyCurrentFilter();
-     });
+           // Generate filter thumbnails
+      function generateFilterThumbnails() {
+        if (!cropper) return;
+        
+        const filters = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness', 'contrast', 'saturate', 'hue-rotate', 'vintage', 'warm', 'cool'];
+        
+        filters.forEach(filterType => {
+          const button = document.querySelector(`[data-filter="${filterType}"]`);
+          if (!button) return;
+          
+          const thumbnail = button.querySelector('.filter-thumbnail');
+          if (!thumbnail) return;
+          
+          // Create a small canvas for the thumbnail
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = 40;
+          canvas.height = 40;
+          
+          // Get the current image
+          const image = document.getElementById('image');
+          if (!image.complete || !image.src) return;
+          
+          // Draw the image to canvas
+          ctx.drawImage(image, 0, 0, 40, 40);
+          
+          // Create image element for thumbnail
+          const img = document.createElement('img');
+          img.src = canvas.toDataURL();
+          
+          // Apply filter based on type
+          const intensity = 1; // Use full intensity for thumbnails
+          let filterValue = 'none';
+          
+          switch(filterType) {
+            case 'grayscale':
+              filterValue = `grayscale(${intensity * 100}%)`;
+              break;
+            case 'sepia':
+              filterValue = `sepia(${intensity * 100}%)`;
+              break;
+            case 'invert':
+              filterValue = `invert(${intensity * 100}%)`;
+              break;
+            case 'blur':
+              filterValue = `blur(${intensity * 2}px)`;
+              break;
+            case 'brightness':
+              filterValue = `brightness(${100 + intensity * 100}%)`;
+              break;
+            case 'contrast':
+              filterValue = `contrast(${100 + intensity * 100}%)`;
+              break;
+            case 'saturate':
+              filterValue = `saturate(${100 + intensity * 200}%)`;
+              break;
+            case 'hue-rotate':
+              filterValue = `hue-rotate(${intensity * 180}deg)`;
+              break;
+            case 'vintage':
+              filterValue = `sepia(${intensity * 50}%) contrast(${100 + intensity * 20}%) brightness(${100 - intensity * 10}%)`;
+              break;
+            case 'warm':
+              filterValue = `sepia(${intensity * 30}%) saturate(${100 + intensity * 40}%) brightness(${100 + intensity * 10}%)`;
+              break;
+            case 'cool':
+              filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
+              break;
+            default:
+              filterValue = 'none';
+              break;
+          }
+          
+          img.style.filter = filterValue;
+          
+          // Clear thumbnail and add image
+          thumbnail.innerHTML = '';
+          thumbnail.appendChild(img);
+        });
+      }
+
+      // Intensity slider event listener
+      filterIntensity.addEventListener('input', (e) => {
+        currentIntensity = parseInt(e.target.value);
+        intensityValue.textContent = `${currentIntensity}%`;
+        applyCurrentFilter();
+      });
 
      // Load saved theme preference
      document.addEventListener('DOMContentLoaded', () => {
