@@ -67,8 +67,31 @@
 
     .container {
       width: 100%;
-      max-width: 1200px;
+      max-width: 1400px;
       padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .main-content {
+      display: flex;
+      width: 100%;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .left-panel {
+      width: 300px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .image-section {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -191,12 +214,10 @@
     }
 
     .controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      display: flex;
+      flex-direction: column;
       gap: 1rem;
       width: 100%;
-      max-width: 800px;
-      margin-top: 1rem;
     }
 
     .control-group {
@@ -224,8 +245,8 @@
     }
 
     .button-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 0.75rem;
     }
 
@@ -393,12 +414,21 @@
         font-size: 2rem;
       }
       
-      .controls {
-        grid-template-columns: 1fr;
+      .main-content {
+        flex-direction: column;
+      }
+      
+      .left-panel {
+        width: 100%;
+        order: 2;
+      }
+      
+      .image-section {
+        order: 1;
       }
       
       .button-grid {
-        grid-template-columns: 1fr;
+        flex-direction: column;
       }
       
       .upload-section {
@@ -457,63 +487,69 @@
       <p class="subtitle">Transform, crop, and enhance your images with professional tools</p>
     </div>
 
-    <div class="upload-section" id="uploadSection">
-      <input type="file" id="fileInput" accept="image/*" />
-      <div class="upload-content">
-        <span class="upload-icon">📸</span>
-        <div class="upload-text">Drop your image here or click to browse</div>
-        <div class="upload-subtext">Supports JPG, PNG, GIF up to 10MB</div>
-      </div>
-    </div>
+    <div class="main-content">
+      <div class="left-panel">
+        <div class="controls" id="controlsSection" style="display: none;">
+          <div class="control-group">
+            <h3>🔄 Transform</h3>
+            <div class="button-grid">
+              <button onclick="rotateLeft()">↺ Rotate Left</button>
+              <button onclick="rotateRight()">↻ Rotate Right</button>
+              <button onclick="flipHorizontal()">⇋ Flip H</button>
+              <button onclick="flipVertical()">⇅ Flip V</button>
+            </div>
+          </div>
 
-    <div class="image-container" id="imageContainer" style="display: none;">
-      <img id="image" src="" alt="Upload to edit" />
-    </div>
+          <div class="control-group">
+            <h3>🔍 Zoom</h3>
+            <div class="button-grid">
+              <button onclick="zoomIn()">➕ Zoom In</button>
+              <button onclick="zoomOut()">➖ Zoom Out</button>
+              <button onclick="resetZoom()">🎯 Reset</button>
+              <button onclick="fitToContainer()">📐 Fit</button>
+            </div>
+          </div>
 
-    <div class="controls" id="controlsSection" style="display: none;">
-      <div class="control-group">
-        <h3>🔄 Transform</h3>
-        <div class="button-grid">
-          <button onclick="rotateLeft()">↺ Rotate Left</button>
-          <button onclick="rotateRight()">↻ Rotate Right</button>
-          <button onclick="flipHorizontal()">⇋ Flip H</button>
-          <button onclick="flipVertical()">⇅ Flip V</button>
+          <div class="control-group">
+            <h3>⚙️ Settings</h3>
+            <div class="button-grid">
+              <button onclick="toggleAspectRatio()">🔒 Lock Aspect</button>
+              <button onclick="resetImage()">↩️ Reset All</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <h3>💾 Export</h3>
+            <div class="button-grid">
+              <button class="primary-button" onclick="download()">⬇️ Download PNG</button>
+              <button onclick="downloadJPG()">📷 Download JPG</button>
+            </div>
+          </div>
+
+          <div class="slider-group" id="sliderSection" style="display: none;">
+            <div class="slider-header">
+              <label for="rotationSlider">🔄 Precise Rotation</label>
+              <div class="rotation-value" id="rotationValue">0°</div>
+            </div>
+            <input type="range" id="rotationSlider" min="-180" max="180" value="0" />
+          </div>
         </div>
       </div>
 
-      <div class="control-group">
-        <h3>🔍 Zoom</h3>
-        <div class="button-grid">
-          <button onclick="zoomIn()">➕ Zoom In</button>
-          <button onclick="zoomOut()">➖ Zoom Out</button>
-          <button onclick="resetZoom()">🎯 Reset</button>
-          <button onclick="fitToContainer()">📐 Fit</button>
+      <div class="image-section">
+        <div class="upload-section" id="uploadSection">
+          <input type="file" id="fileInput" accept="image/*" />
+          <div class="upload-content">
+            <span class="upload-icon">📸</span>
+            <div class="upload-text">Drop your image here or click to browse</div>
+            <div class="upload-subtext">Supports JPG, PNG, GIF up to 10MB</div>
+          </div>
+        </div>
+
+        <div class="image-container" id="imageContainer" style="display: none;">
+          <img id="image" src="" alt="Upload to edit" />
         </div>
       </div>
-
-      <div class="control-group">
-        <h3>⚙️ Settings</h3>
-        <div class="button-grid">
-          <button onclick="toggleAspectRatio()">🔒 Lock Aspect</button>
-          <button onclick="resetImage()">↩️ Reset All</button>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <h3>💾 Export</h3>
-        <div class="button-grid">
-          <button class="primary-button" onclick="download()">⬇️ Download PNG</button>
-          <button onclick="downloadJPG()">📷 Download JPG</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="slider-group" id="sliderSection" style="display: none;">
-      <div class="slider-header">
-        <label for="rotationSlider">🔄 Precise Rotation</label>
-        <div class="rotation-value" id="rotationValue">0°</div>
-      </div>
-      <input type="range" id="rotationSlider" min="-180" max="180" value="0" />
     </div>
   </div>
 
@@ -588,7 +624,7 @@
         // Show image container and controls
         uploadSection.style.display = 'none';
         imageContainer.style.display = 'block';
-        controlsSection.style.display = 'grid';
+        controlsSection.style.display = 'flex';
         sliderSection.style.display = 'flex';
 
         // Initialize cropper
