@@ -6,128 +6,515 @@
   <title>Advanced Image Editor</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
     :root {
-  --bg: #ffffff;
-  --text: #111111;
-  --btn-bg: #f5f5f5;
-  --btn-text: #111111;
-  --accent: #4f46e5;
-  --border: #e0e0e0;
-}
+      --bg: #fafafa;
+      --bg-secondary: #ffffff;
+      --text: #1a1a1a;
+      --text-secondary: #6b7280;
+      --btn-bg: #ffffff;
+      --btn-text: #374151;
+      --btn-hover: #f3f4f6;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-light: #e0e7ff;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+    }
 
-[data-theme="dark"] {
-  --bg: #1f1f1f;
-  --text: #f5f5f5;
-  --btn-bg: #2c2c2c;
-  --btn-text: #f5f5f5;
-  --accent: #818cf8;
-  --border: #444;
-}
+    [data-theme="dark"] {
+      --bg: #0f0f0f;
+      --bg-secondary: #1a1a1a;
+      --text: #f9fafb;
+      --text-secondary: #9ca3af;
+      --btn-bg: #1f2937;
+      --btn-text: #f9fafb;
+      --btn-hover: #374151;
+      --accent: #818cf8;
+      --accent-hover: #6366f1;
+      --accent-light: #312e81;
+      --border: #374151;
+      --border-light: #1f2937;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
 
-body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  transition: background 0.3s ease, color 0.3s ease;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  color: var(--accent);
-}
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      line-height: 1.6;
+    }
 
-#image {
-  max-width: 100%;
-  max-height: 60vh;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  margin-top: 1rem;
-}
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
 
-.controls {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-}
+    .header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
 
-.controls button,
-.controls input[type="file"],
-.controls input[type="range"] {
-  padding: 0.6rem 1rem;
-  font-size: 14px;
-  border: 1px solid var(--border);
-  background-color: var(--btn-bg);
-  color: var(--btn-text);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.025em;
+    }
 
-.controls button:hover,
-.controls input[type="file"]:hover {
-  background-color: var(--accent);
-  color: white;
-  border-color: var(--accent);
-}
+    .subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      font-weight: 400;
+    }
 
-input[type="range"] {
-  width: 160px;
-  accent-color: var(--accent);
-}
+    .upload-section {
+      background: var(--bg-secondary);
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
 
-.slider-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--btn-bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
+    .upload-section:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      transform: translateY(-2px);
+    }
 
-.rotation-value {
-  font-weight: bold;
-  font-size: 1rem;
-  width: 40px;
-  text-align: center;
-}
+    .upload-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
 
+    .upload-section:hover::before {
+      opacity: 0.05;
+    }
 
+    #fileInput {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .upload-content {
+      pointer-events: none;
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .upload-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-subtext {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .image-container {
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      max-width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient);
+    }
+
+    #image {
+      max-width: 100%;
+      max-height: 60vh;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      display: block;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 800px;
+      margin-top: 1rem;
+    }
+
+    .control-group {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .control-group:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .control-group h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .controls button {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .controls button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .controls button:hover::before {
+      left: 100%;
+    }
+
+    .controls button:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .controls button:active {
+      transform: translateY(0);
+    }
+
+    .primary-button {
+      background: var(--accent) !important;
+      color: white !important;
+      border-color: var(--accent) !important;
+      font-weight: 600;
+    }
+
+    .primary-button:hover {
+      background: var(--accent-hover) !important;
+      border-color: var(--accent-hover) !important;
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 400px;
+      margin-top: 1rem;
+    }
+
+    .slider-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .slider-header label {
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .rotation-value {
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border-light);
+      outline: none;
+      -webkit-appearance: none;
+      transition: all 0.3s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      z-index: 1000;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1) rotate(180deg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      h2 {
+        font-size: 2rem;
+      }
+      
+      .controls {
+        grid-template-columns: 1fr;
+      }
+      
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .upload-section {
+        padding: 2rem 1rem;
+      }
+      
+      .theme-toggle {
+        top: 1rem;
+        right: 1rem;
+        width: 45px;
+        height: 45px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .control-group {
+        padding: 1rem;
+      }
+      
+      .slider-group {
+        padding: 1rem;
+      }
+    }
+
+    /* Loading animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading {
+      animation: pulse 2s infinite;
+    }
+
+    /* Smooth scroll behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Focus styles for accessibility */
+    button:focus,
+    input:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
   </style>
 </head>
 <body data-theme="light">
-  <h2>🖼️ Advanced Image Editor</h2>
-  <input type="file" id="fileInput" accept="image/*" />
-
-  <div>
-    <img id="image" src="" alt="Upload to edit" />
+  <div class="theme-toggle" onclick="toggleTheme()">
+    🌓
   </div>
 
-  <div class="controls">
-    <button onclick="rotateLeft()">↺ Rotate Left</button>
-    <button onclick="rotateRight()">↻ Rotate Right</button>
-    <button onclick="flipHorizontal()">⇋ Flip Horizontal</button>
-    <button onclick="flipVertical()">⇅ Flip Vertical</button>
-    <button onclick="zoomIn()">➕ Zoom In</button>
-    <button onclick="zoomOut()">➖ Zoom Out</button>
-    <button onclick="toggleAspectRatio()">🔒 Toggle Aspect</button>
-    <button onclick="toggleTheme()">🌓 Toggle Theme</button>
-    <button onclick="download()">⬇️ Download</button>
-  </div>
+  <div class="container">
+    <div class="header">
+      <h2>🖼️ Advanced Image Editor</h2>
+      <p class="subtitle">Transform, crop, and enhance your images with professional tools</p>
+    </div>
 
-  <div class="slider-group" style="margin-top: 10px;">
-    <label for="rotationSlider">Rotation:</label>
-    <input type="range" id="rotationSlider" min="-180" max="180" value="0" />
-    <div class="rotation-value" id="rotationValue">0°</div>
+    <div class="upload-section" id="uploadSection">
+      <input type="file" id="fileInput" accept="image/*" />
+      <div class="upload-content">
+        <span class="upload-icon">📸</span>
+        <div class="upload-text">Drop your image here or click to browse</div>
+        <div class="upload-subtext">Supports JPG, PNG, GIF up to 10MB</div>
+      </div>
+    </div>
+
+    <div class="image-container" id="imageContainer" style="display: none;">
+      <img id="image" src="" alt="Upload to edit" />
+    </div>
+
+    <div class="controls" id="controlsSection" style="display: none;">
+      <div class="control-group">
+        <h3>🔄 Transform</h3>
+        <div class="button-grid">
+          <button onclick="rotateLeft()">↺ Rotate Left</button>
+          <button onclick="rotateRight()">↻ Rotate Right</button>
+          <button onclick="flipHorizontal()">⇋ Flip H</button>
+          <button onclick="flipVertical()">⇅ Flip V</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <h3>🔍 Zoom</h3>
+        <div class="button-grid">
+          <button onclick="zoomIn()">➕ Zoom In</button>
+          <button onclick="zoomOut()">➖ Zoom Out</button>
+          <button onclick="resetZoom()">🎯 Reset</button>
+          <button onclick="fitToContainer()">📐 Fit</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <h3>⚙️ Settings</h3>
+        <div class="button-grid">
+          <button onclick="toggleAspectRatio()">🔒 Lock Aspect</button>
+          <button onclick="resetImage()">↩️ Reset All</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <h3>💾 Export</h3>
+        <div class="button-grid">
+          <button class="primary-button" onclick="download()">⬇️ Download PNG</button>
+          <button onclick="downloadJPG()">📷 Download JPG</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="slider-group" id="sliderSection" style="display: none;">
+      <div class="slider-header">
+        <label for="rotationSlider">🔄 Precise Rotation</label>
+        <div class="rotation-value" id="rotationValue">0°</div>
+      </div>
+      <input type="range" id="rotationSlider" min="-180" max="180" value="0" />
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
@@ -143,15 +530,68 @@ input[type="range"] {
     const rotationSlider = document.getElementById('rotationSlider');
     const rotationValue = document.getElementById('rotationValue');
     const body = document.body;
+    const uploadSection = document.getElementById('uploadSection');
+    const imageContainer = document.getElementById('imageContainer');
+    const controlsSection = document.getElementById('controlsSection');
+    const sliderSection = document.getElementById('sliderSection');
 
-    fileInput.addEventListener('change', (e) => {
+    // Enhanced file input handling with drag and drop
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    // Drag and drop functionality
+    uploadSection.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadSection.style.borderColor = 'var(--accent)';
+      uploadSection.style.background = 'var(--accent-light)';
+    });
+
+    uploadSection.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      uploadSection.style.borderColor = 'var(--border)';
+      uploadSection.style.background = 'var(--bg-secondary)';
+    });
+
+    uploadSection.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadSection.style.borderColor = 'var(--border)';
+      uploadSection.style.background = 'var(--bg-secondary)';
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    function handleFileSelect(e) {
       const file = e.target.files[0];
       if (!file) return;
+      handleFile(file);
+    }
+
+    function handleFile(file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+
+      // Validate file size (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10MB.');
+        return;
+      }
 
       const reader = new FileReader();
       reader.onload = () => {
         image.src = reader.result;
+        
+        // Show image container and controls
+        uploadSection.style.display = 'none';
+        imageContainer.style.display = 'block';
+        controlsSection.style.display = 'grid';
+        sliderSection.style.display = 'flex';
 
+        // Initialize cropper
         if (cropper) cropper.destroy();
         cropper = new Cropper(image, {
           viewMode: 1,
@@ -159,14 +599,26 @@ input[type="range"] {
           autoCropArea: 1,
           responsive: true,
           background: false,
+          checkOrientation: false,
+          modal: true,
+          guides: true,
+          center: true,
+          highlight: false,
+          cropBoxMovable: true,
+          cropBoxResizable: true,
+          toggleDragModeOnDblclick: false,
         });
 
+        // Reset states
         currentRotation = 0;
+        flippedH = false;
+        flippedV = false;
+        fixedAspect = false;
         rotationSlider.value = 0;
         rotationValue.textContent = '0°';
       };
       reader.readAsDataURL(file);
-    });
+    }
 
     function rotateLeft() {
       updateRotation(currentRotation - 90);
@@ -178,6 +630,10 @@ input[type="range"] {
 
     function updateRotation(value) {
       if (!cropper) return;
+      // Normalize rotation value
+      while (value > 180) value -= 360;
+      while (value < -180) value += 360;
+      
       currentRotation = value;
       cropper.rotateTo(currentRotation);
       rotationSlider.value = currentRotation;
@@ -192,12 +648,22 @@ input[type="range"] {
       if (!cropper) return;
       flippedH = !flippedH;
       cropper.scaleX(flippedH ? -1 : 1);
+      
+      // Update button appearance
+      const button = event.target;
+      button.style.background = flippedH ? 'var(--accent)' : 'var(--btn-bg)';
+      button.style.color = flippedH ? 'white' : 'var(--btn-text)';
     }
 
     function flipVertical() {
       if (!cropper) return;
       flippedV = !flippedV;
       cropper.scaleY(flippedV ? -1 : 1);
+      
+      // Update button appearance
+      const button = event.target;
+      button.style.background = flippedV ? 'var(--accent)' : 'var(--btn-bg)';
+      button.style.color = flippedV ? 'white' : 'var(--btn-text)';
     }
 
     function zoomIn() {
@@ -210,25 +676,141 @@ input[type="range"] {
       cropper.zoom(-0.1);
     }
 
+    function resetZoom() {
+      if (!cropper) return;
+      cropper.reset();
+    }
+
+    function fitToContainer() {
+      if (!cropper) return;
+      cropper.reset();
+      cropper.clear();
+      cropper.crop();
+    }
+
     function toggleAspectRatio() {
       if (!cropper) return;
       fixedAspect = !fixedAspect;
       cropper.setAspectRatio(fixedAspect ? 1 : NaN);
+      
+      // Update button appearance
+      const button = event.target;
+      button.style.background = fixedAspect ? 'var(--accent)' : 'var(--btn-bg)';
+      button.style.color = fixedAspect ? 'white' : 'var(--btn-text)';
+      button.textContent = fixedAspect ? '🔓 Unlock Aspect' : '🔒 Lock Aspect';
+    }
+
+    function resetImage() {
+      if (!cropper) return;
+      
+      // Reset all transformations
+      currentRotation = 0;
+      flippedH = false;
+      flippedV = false;
+      fixedAspect = false;
+      
+      cropper.reset();
+      rotationSlider.value = 0;
+      rotationValue.textContent = '0°';
+      
+      // Reset button appearances
+      document.querySelectorAll('.controls button').forEach(btn => {
+        if (!btn.classList.contains('primary-button')) {
+          btn.style.background = 'var(--btn-bg)';
+          btn.style.color = 'var(--btn-text)';
+        }
+      });
+      
+      // Reset button texts
+      document.querySelector('button[onclick="toggleAspectRatio()"]').textContent = '🔒 Lock Aspect';
     }
 
     function toggleTheme() {
       const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       body.setAttribute('data-theme', theme);
+      
+      // Store theme preference
+      localStorage.setItem('theme', theme);
     }
 
     function download() {
       if (!cropper) return;
-      const canvas = cropper.getCroppedCanvas({ fillColor: '#fff' });
+      
+      const canvas = cropper.getCroppedCanvas({
+        fillColor: '#fff',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+      });
+      
       const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-      link.download = 'edited-image.png';
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.download = `edited-image-${Date.now()}.png`;
       link.click();
     }
+
+    function downloadJPG() {
+      if (!cropper) return;
+      
+      const canvas = cropper.getCroppedCanvas({
+        fillColor: '#fff',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+      });
+      
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/jpeg', 0.9);
+      link.download = `edited-image-${Date.now()}.jpg`;
+      link.click();
+    }
+
+    // Load saved theme preference
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      body.setAttribute('data-theme', savedTheme);
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (!cropper) return;
+      
+      // Prevent shortcuts when typing in inputs
+      if (e.target.tagName === 'INPUT') return;
+      
+      switch(e.key.toLowerCase()) {
+        case 'r':
+          if (e.shiftKey) {
+            rotateLeft();
+          } else {
+            rotateRight();
+          }
+          break;
+        case 'h':
+          flipHorizontal();
+          break;
+        case 'v':
+          flipVertical();
+          break;
+        case '=':
+        case '+':
+          zoomIn();
+          break;
+        case '-':
+          zoomOut();
+          break;
+        case '0':
+          resetZoom();
+          break;
+        case 'escape':
+          resetImage();
+          break;
+        case 's':
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            download();
+          }
+          break;
+      }
+    });
   </script>
 </body>
 </html>
