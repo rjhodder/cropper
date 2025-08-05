@@ -835,6 +835,12 @@
                      </div>
                      <span>Cool</span>
                    </button>
+                   <button onclick="applyFilter('sharpen')" class="filter-btn" data-filter="sharpen">
+                     <div class="filter-thumbnail">
+                       <span>🔪</span>
+                     </div>
+                     <span>Sharpen</span>
+                   </button>
                  </div>
                  <div class="filter-intensity-control">
                    <div class="intensity-header">
@@ -1260,6 +1266,9 @@
           case 'cool':
             filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
             break;
+          case 'sharpen':
+            filterValue = `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;
+            break;
           default:
             filterValue = 'none';
             break;
@@ -1284,7 +1293,7 @@
       function generateFilterThumbnails() {
         if (!cropper) return;
         
-        const filters = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness', 'contrast', 'saturate', 'hue-rotate', 'vintage', 'warm', 'cool'];
+        const filters = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness', 'contrast', 'saturate', 'hue-rotate', 'vintage', 'warm', 'cool', 'sharpen'];
         
         filters.forEach(filterType => {
           const button = document.querySelector(`[data-filter="${filterType}"]`);
@@ -1347,6 +1356,9 @@
               break;
             case 'cool':
               filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
+              break;
+            case 'sharpen':
+              filterValue = `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;
               break;
             default:
               filterValue = 'none';
