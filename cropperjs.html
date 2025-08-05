@@ -1331,7 +1331,7 @@
             case 'cool':
               return `hue-rotate(${filterIntensity * 180}deg) saturate(${100 - filterIntensity * 20}%) brightness(${100 - filterIntensity * 5}%)`;
             case 'sharpen':
-              return `contrast(${100 + filterIntensity * 50}%) saturate(${100 + filterIntensity * 30}%)`;
+              return `contrast(${100 + filterIntensity * 40}%) brightness(${100 - filterIntensity * 3}%) saturate(${100 + filterIntensity * 15}%)`;
             default:
               return 'none';
           }
@@ -1433,7 +1433,7 @@
               case 'cool':
                 return `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
               case 'sharpen':
-                return `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;
+                return `contrast(${100 + intensity * 40}%) brightness(${100 - intensity * 3}%) saturate(${100 + intensity * 15}%)`;
               default:
                 return 'none';
             }
@@ -1535,7 +1535,7 @@
             filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
             break;
           case 'sharpen':
-            filterValue = `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;
+            filterValue = `contrast(${100 + intensity * 40}%) brightness(${100 - intensity * 3}%) saturate(${100 + intensity * 15}%)`;
             break;
           default:
             filterValue = 'none';
@@ -1626,7 +1626,7 @@
               filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
               break;
             case 'sharpen':
-              filterValue = `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;
+              filterValue = `contrast(${100 + intensity * 40}%) brightness(${100 - intensity * 3}%) saturate(${100 + intensity * 15}%)`;
               break;
             default:
               filterValue = 'none';
