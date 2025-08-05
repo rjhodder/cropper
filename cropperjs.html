@@ -448,16 +448,68 @@
        font-size: 0.875rem;
      }
 
-     .intensity-value {
-       font-weight: 700;
-       font-size: 0.875rem;
-       color: var(--accent);
-       background: var(--accent-light);
-       padding: 0.25rem 0.5rem;
-       border-radius: 4px;
-       min-width: 40px;
-       text-align: center;
-     }
+           .intensity-value {
+        font-weight: 700;
+        font-size: 0.875rem;
+        color: var(--accent);
+        background: var(--accent-light);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        min-width: 40px;
+        text-align: center;
+      }
+
+      .filter-actions {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .apply-filter-btn,
+      .undo-filter-btn {
+        flex: 1;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid var(--border);
+        background: var(--btn-bg);
+        color: var(--btn-text);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+      }
+
+      .apply-filter-btn {
+        background: var(--success) !important;
+        color: white !important;
+        border-color: var(--success) !important;
+      }
+
+      .apply-filter-btn:hover {
+        background: #059669 !important;
+        border-color: #059669 !important;
+        transform: translateY(-1px);
+      }
+
+      .undo-filter-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: var(--border-light) !important;
+        color: var(--text-secondary) !important;
+      }
+
+      .undo-filter-btn:not(:disabled):hover {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
 
            .rotation-controls {
        background: var(--bg-secondary);
@@ -849,6 +901,10 @@
                    </div>
                    <input type="range" id="filterIntensity" min="0" max="100" value="100" />
                  </div>
+                 <div class="filter-actions">
+                   <button onclick="applyCurrentFilterToStack()" class="apply-filter-btn">✅ Apply Filter</button>
+                   <button onclick="undoLastFilter()" class="undo-filter-btn" disabled>↩️ Undo</button>
+                 </div>
                </div>
             </div>
 
@@ -1110,13 +1166,16 @@
          function resetImage() {
        if (!cropper) return;
        
-       // Reset all transformations
-       currentRotation = 0;
-       flippedH = false;
-       flippedV = false;
-       fixedAspect = false;
-       currentFilter = 'none';
-       currentIntensity = 100;
+               // Reset all transformations
+        currentRotation = 0;
+        flippedH = false;
+        flippedV = false;
+        fixedAspect = false;
+        currentFilter = 'none';
+        currentIntensity = 100;
+        appliedFilters = [];
+        filterHistory = [];
+        historyIndex = -1;
        
        cropper.reset();
        rotationSlider.value = 0;
@@ -1153,6 +1212,9 @@
                // Reset intensity slider
         filterIntensity.value = 100;
         intensityValue.textContent = '100%';
+        
+        // Update undo button
+        updateUndoButton();
         
         // Regenerate filter thumbnails
         setTimeout(() => {
@@ -1201,9 +1263,12 @@
       link.click();
     }
 
-         // Filter functionality
-     let currentFilter = 'none';
-     let currentIntensity = 100;
+               // Filter functionality
+      let currentFilter = 'none';
+      let currentIntensity = 100;
+      let appliedFilters = [];
+      let filterHistory = [];
+      let historyIndex = -1;
 
      function toggleFilters() {
        const panel = document.getElementById('filtersPanel');
@@ -1211,18 +1276,150 @@
        panel.style.display = isVisible ? 'none' : 'block';
      }
 
-     function applyFilter(filterType) {
-       if (!cropper) return;
-       
-       currentFilter = filterType;
-       applyCurrentFilter();
-       
-       // Update active button
-       document.querySelectorAll('.filter-btn').forEach(btn => {
-         btn.classList.remove('active');
-       });
-       event.target.classList.add('active');
-     }
+           function applyFilter(filterType) {
+        if (!cropper) return;
+        
+        currentFilter = filterType;
+        applyCurrentFilter();
+        
+        // Update active button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      function applyCurrentFilterToStack() {
+        if (!cropper || currentFilter === 'none') return;
+        
+        // Add current filter to applied filters
+        const filterToApply = {
+          type: currentFilter,
+          intensity: currentIntensity
+        };
+        
+        appliedFilters.push(filterToApply);
+        
+        // Save to history
+        saveToHistory();
+        
+        // Apply all filters
+        applyAllFilters();
+        
+        // Update undo button
+        updateUndoButton();
+        
+        // Show feedback
+        showFilterAppliedFeedback();
+      }
+
+      function undoLastFilter() {
+        if (appliedFilters.length === 0) return;
+        
+        // Remove last filter
+        appliedFilters.pop();
+        
+        // Save to history
+        saveToHistory();
+        
+        // Apply remaining filters
+        applyAllFilters();
+        
+        // Update undo button
+        updateUndoButton();
+      }
+
+      function applyAllFilters() {
+        if (!cropper) return;
+        
+        const image = document.getElementById('image');
+        let combinedFilter = 'none';
+        
+        if (appliedFilters.length > 0) {
+          const filterStrings = appliedFilters.map(filter => {
+            const intensity = filter.intensity / 100;
+            switch(filter.type) {
+              case 'grayscale':
+                return `grayscale(${intensity * 100}%)`;
+              case 'sepia':
+                return `sepia(${intensity * 100}%)`;
+              case 'invert':
+                return `invert(${intensity * 100}%)`;
+              case 'blur':
+                return `blur(${intensity * 4}px)`;
+              case 'brightness':
+                return `brightness(${100 + intensity * 100}%)`;
+              case 'contrast':
+                return `contrast(${100 + intensity * 100}%)`;
+              case 'saturate':
+                return `saturate(${100 + intensity * 200}%)`;
+              case 'hue-rotate':
+                return `hue-rotate(${intensity * 360}deg)`;
+              case 'vintage':
+                return `sepia(${intensity * 50}%) contrast(${100 + intensity * 20}%) brightness(${100 - intensity * 10}%)`;
+              case 'warm':
+                return `sepia(${intensity * 30}%) saturate(${100 + intensity * 40}%) brightness(${100 + intensity * 10}%)`;
+              case 'cool':
+                return `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
+              case 'sharpen':
+                return `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;
+              default:
+                return 'none';
+            }
+          });
+          
+          combinedFilter = filterStrings.join(' ');
+        }
+        
+        // Apply combined filter
+        image.style.filter = combinedFilter;
+        
+        // Apply to cropper container
+        const cropperContainer = document.querySelector('.cropper-container');
+        if (cropperContainer) {
+          cropperContainer.style.filter = combinedFilter;
+          const cropperCanvas = cropperContainer.querySelector('canvas');
+          if (cropperCanvas) {
+            cropperCanvas.style.filter = combinedFilter;
+          }
+        }
+      }
+
+      function saveToHistory() {
+        // Remove any history after current index
+        filterHistory = filterHistory.slice(0, historyIndex + 1);
+        
+        // Add current state to history
+        filterHistory.push([...appliedFilters]);
+        historyIndex++;
+        
+        // Limit history size
+        if (filterHistory.length > 20) {
+          filterHistory.shift();
+          historyIndex--;
+        }
+      }
+
+      function updateUndoButton() {
+        const undoBtn = document.querySelector('.undo-filter-btn');
+        if (undoBtn) {
+          undoBtn.disabled = appliedFilters.length === 0;
+        }
+      }
+
+      function showFilterAppliedFeedback() {
+        const applyBtn = document.querySelector('.apply-filter-btn');
+        if (applyBtn) {
+          const originalText = applyBtn.textContent;
+          applyBtn.textContent = '✅ Applied!';
+          applyBtn.style.background = '#059669';
+          
+          setTimeout(() => {
+            applyBtn.textContent = originalText;
+            applyBtn.style.background = '';
+          }, 1000);
+        }
+      }
 
            function applyCurrentFilter() {
         if (!cropper) return;
