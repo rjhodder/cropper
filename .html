@@ -1,0 +1,41 @@
+warning: in the working copy of 'cropperjs.html', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/cropperjs.html b/cropperjs.html[m
+[1mindex 058111e..69978d4 100644[m
+[1m--- a/cropperjs.html[m
+[1m+++ b/cropperjs.html[m
+[36m@@ -1331,7 +1331,7 @@[m
+             case 'cool':[m
+               return `hue-rotate(${filterIntensity * 180}deg) saturate(${100 - filterIntensity * 20}%) brightness(${100 - filterIntensity * 5}%)`;[m
+             case 'sharpen':[m
+[31m-              return `contrast(${100 + filterIntensity * 40}%) brightness(${100 - filterIntensity * 3}%) saturate(${100 + filterIntensity * 15}%)`;[m
+[32m+[m[32m              return `contrast(${100 + filterIntensity * 50}%) saturate(${100 + filterIntensity * 30}%)`;[m
+             default:[m
+               return 'none';[m
+           }[m
+[36m@@ -1433,7 +1433,7 @@[m
+               case 'cool':[m
+                 return `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;[m
+               case 'sharpen':[m
+[31m-                return `contrast(${100 + intensity * 40}%) brightness(${100 - intensity * 3}%) saturate(${100 + intensity * 15}%)`;[m
+[32m+[m[32m                return `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;[m
+               default:[m
+                 return 'none';[m
+             }[m
+[36m@@ -1535,7 +1535,7 @@[m
+             filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;[m
+             break;[m
+           case 'sharpen':[m
+[31m-            filterValue = `contrast(${100 + intensity * 40}%) brightness(${100 - intensity * 3}%) saturate(${100 + intensity * 15}%)`;[m
+[32m+[m[32m            filterValue = `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;[m
+             break;[m
+           default:[m
+             filterValue = 'none';[m
+[36m@@ -1626,7 +1626,7 @@[m
+               filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;[m
+               break;[m
+             case 'sharpen':[m
+[31m-              filterValue = `contrast(${100 + intensity * 40}%) brightness(${100 - intensity * 3}%) saturate(${100 + intensity * 15}%)`;[m
+[32m+[m[32m              filterValue = `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;[m
+               break;[m
+             default:[m
+               filterValue = 'none';[m
