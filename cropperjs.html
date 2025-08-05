@@ -1280,13 +1280,77 @@
         if (!cropper) return;
         
         currentFilter = filterType;
-        applyCurrentFilter();
+        
+        // Only apply current filter for preview, don't overwrite applied filters
+        if (appliedFilters.length === 0) {
+          applyCurrentFilter();
+        } else {
+          // Show preview of what the filter would look like when applied
+          showFilterPreview();
+        }
         
         // Update active button
         document.querySelectorAll('.filter-btn').forEach(btn => {
           btn.classList.remove('active');
         });
         event.target.classList.add('active');
+      }
+
+      function showFilterPreview() {
+        if (!cropper || currentFilter === 'none') return;
+        
+        const image = document.getElementById('image');
+        const intensity = currentIntensity / 100;
+        let previewFilter = 'none';
+        
+        // Create preview filter (current filter + all applied filters)
+        const allFilters = [...appliedFilters, { type: currentFilter, intensity: currentIntensity }];
+        const filterStrings = allFilters.map(filter => {
+          const filterIntensity = filter.intensity / 100;
+          switch(filter.type) {
+            case 'grayscale':
+              return `grayscale(${filterIntensity * 100}%)`;
+            case 'sepia':
+              return `sepia(${filterIntensity * 100}%)`;
+            case 'invert':
+              return `invert(${filterIntensity * 100}%)`;
+            case 'blur':
+              return `blur(${filterIntensity * 4}px)`;
+            case 'brightness':
+              return `brightness(${100 + filterIntensity * 100}%)`;
+            case 'contrast':
+              return `contrast(${100 + filterIntensity * 100}%)`;
+            case 'saturate':
+              return `saturate(${100 + filterIntensity * 200}%)`;
+            case 'hue-rotate':
+              return `hue-rotate(${filterIntensity * 360}deg)`;
+            case 'vintage':
+              return `sepia(${filterIntensity * 50}%) contrast(${100 + filterIntensity * 20}%) brightness(${100 - filterIntensity * 10}%)`;
+            case 'warm':
+              return `sepia(${filterIntensity * 30}%) saturate(${100 + filterIntensity * 40}%) brightness(${100 + filterIntensity * 10}%)`;
+            case 'cool':
+              return `hue-rotate(${filterIntensity * 180}deg) saturate(${100 - filterIntensity * 20}%) brightness(${100 - filterIntensity * 5}%)`;
+            case 'sharpen':
+              return `contrast(${100 + filterIntensity * 50}%) saturate(${100 + filterIntensity * 30}%)`;
+            default:
+              return 'none';
+          }
+        });
+        
+        previewFilter = filterStrings.join(' ');
+        
+        // Apply preview filter
+        image.style.filter = previewFilter;
+        
+        // Apply to cropper container
+        const cropperContainer = document.querySelector('.cropper-container');
+        if (cropperContainer) {
+          cropperContainer.style.filter = previewFilter;
+          const cropperCanvas = cropperContainer.querySelector('canvas');
+          if (cropperCanvas) {
+            cropperCanvas.style.filter = previewFilter;
+          }
+        }
       }
 
       function applyCurrentFilterToStack() {
@@ -1311,6 +1375,13 @@
         
         // Show feedback
         showFilterAppliedFeedback();
+        
+        // Reset current filter to 'none' after applying
+        currentFilter = 'none';
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        document.querySelector('.filter-btn[data-filter="none"]').classList.add('active');
       }
 
       function undoLastFilter() {
@@ -1574,7 +1645,12 @@
       filterIntensity.addEventListener('input', (e) => {
         currentIntensity = parseInt(e.target.value);
         intensityValue.textContent = `${currentIntensity}%`;
-        applyCurrentFilter();
+        
+        if (appliedFilters.length === 0) {
+          applyCurrentFilter();
+        } else {
+          showFilterPreview();
+        }
       });
 
            // Panel collapse functionality
