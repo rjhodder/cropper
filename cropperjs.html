@@ -307,44 +307,113 @@
       border-color: var(--accent-hover) !important;
     }
 
-    .slider-group {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      padding: 1.5rem;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      width: 100%;
-      max-width: 400px;
-      margin-top: 1rem;
-    }
+         .rotation-controls {
+       background: var(--bg-secondary);
+       border-radius: 12px;
+       padding: 1.5rem;
+       box-shadow: var(--shadow);
+       border: 1px solid var(--border);
+       width: 100%;
+       max-width: 600px;
+       margin-top: 1rem;
+     }
 
-    .slider-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+     .rotation-header h3 {
+       margin: 0 0 1rem 0;
+       font-size: 1rem;
+       font-weight: 600;
+       color: var(--text);
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+     }
 
-    .slider-header label {
-      font-weight: 600;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+     .rotation-input-group {
+       display: flex;
+       flex-direction: column;
+       gap: 1rem;
+     }
 
-    .rotation-value {
-      font-weight: 700;
-      font-size: 1.125rem;
-      color: var(--accent);
-      background: var(--accent-light);
-      padding: 0.25rem 0.75rem;
-      border-radius: 6px;
-      min-width: 50px;
-      text-align: center;
-    }
+     .rotation-input-wrapper {
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+       background: var(--bg);
+       border: 1px solid var(--border);
+       border-radius: 8px;
+       padding: 0.5rem;
+       width: fit-content;
+     }
+
+     .rotation-input-wrapper input {
+       border: none;
+       background: transparent;
+       font-size: 1.125rem;
+       font-weight: 600;
+       color: var(--text);
+       width: 80px;
+       text-align: center;
+       outline: none;
+     }
+
+     .rotation-input-wrapper input::-webkit-outer-spin-button,
+     .rotation-input-wrapper input::-webkit-inner-spin-button {
+       -webkit-appearance: none;
+       margin: 0;
+     }
+
+     .rotation-input-wrapper input[type=number] {
+       -moz-appearance: textfield;
+     }
+
+     .degree-symbol {
+       font-size: 1.125rem;
+       font-weight: 600;
+       color: var(--text-secondary);
+     }
+
+     .rotation-slider-wrapper {
+       width: 100%;
+     }
+
+     .slider-group {
+       display: flex;
+       flex-direction: column;
+       gap: 1rem;
+       padding: 1.5rem;
+       background: var(--bg-secondary);
+       border: 1px solid var(--border);
+       border-radius: 12px;
+       box-shadow: var(--shadow);
+       width: 100%;
+       max-width: 400px;
+       margin-top: 1rem;
+     }
+
+     .slider-header {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+     }
+
+     .slider-header label {
+       font-weight: 600;
+       color: var(--text);
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+     }
+
+     .rotation-value {
+       font-weight: 700;
+       font-size: 1.125rem;
+       color: var(--accent);
+       background: var(--accent-light);
+       padding: 0.25rem 0.75rem;
+       border-radius: 6px;
+       min-width: 50px;
+       text-align: center;
+     }
 
     input[type="range"] {
       width: 100%;
@@ -526,13 +595,7 @@
             </div>
           </div>
 
-          <div class="slider-group" id="sliderSection" style="display: none;">
-            <div class="slider-header">
-              <label for="rotationSlider">🔄 Precise Rotation</label>
-              <div class="rotation-value" id="rotationValue">0°</div>
-            </div>
-            <input type="range" id="rotationSlider" min="-180" max="180" value="0" />
-          </div>
+          
         </div>
       </div>
 
@@ -546,9 +609,24 @@
           </div>
         </div>
 
-        <div class="image-container" id="imageContainer" style="display: none;">
-          <img id="image" src="" alt="Upload to edit" />
-        </div>
+                 <div class="image-container" id="imageContainer" style="display: none;">
+           <img id="image" src="" alt="Upload to edit" />
+         </div>
+
+         <div class="rotation-controls" id="rotationSection" style="display: none;">
+           <div class="rotation-header">
+             <h3>🔄 Precise Rotation</h3>
+           </div>
+           <div class="rotation-input-group">
+             <div class="rotation-input-wrapper">
+               <input type="number" id="rotationInput" min="-180" max="180" value="0" step="1" placeholder="0" />
+               <span class="degree-symbol">°</span>
+             </div>
+             <div class="rotation-slider-wrapper">
+               <input type="range" id="rotationSlider" min="-180" max="180" value="0" />
+             </div>
+           </div>
+         </div>
       </div>
     </div>
   </div>
@@ -563,13 +641,13 @@
 
     const image = document.getElementById('image');
     const fileInput = document.getElementById('fileInput');
-    const rotationSlider = document.getElementById('rotationSlider');
-    const rotationValue = document.getElementById('rotationValue');
-    const body = document.body;
-    const uploadSection = document.getElementById('uploadSection');
-    const imageContainer = document.getElementById('imageContainer');
-    const controlsSection = document.getElementById('controlsSection');
-    const sliderSection = document.getElementById('sliderSection');
+         const rotationSlider = document.getElementById('rotationSlider');
+     const rotationInput = document.getElementById('rotationInput');
+     const body = document.body;
+     const uploadSection = document.getElementById('uploadSection');
+     const imageContainer = document.getElementById('imageContainer');
+     const controlsSection = document.getElementById('controlsSection');
+     const rotationSection = document.getElementById('rotationSection');
 
     // Enhanced file input handling with drag and drop
     fileInput.addEventListener('change', handleFileSelect);
@@ -621,11 +699,11 @@
       reader.onload = () => {
         image.src = reader.result;
         
-        // Show image container and controls
-        uploadSection.style.display = 'none';
-        imageContainer.style.display = 'block';
-        controlsSection.style.display = 'flex';
-        sliderSection.style.display = 'flex';
+                 // Show image container and controls
+         uploadSection.style.display = 'none';
+         imageContainer.style.display = 'block';
+         controlsSection.style.display = 'flex';
+         rotationSection.style.display = 'block';
 
         // Initialize cropper
         if (cropper) cropper.destroy();
@@ -645,13 +723,13 @@
           toggleDragModeOnDblclick: false,
         });
 
-        // Reset states
-        currentRotation = 0;
-        flippedH = false;
-        flippedV = false;
-        fixedAspect = false;
-        rotationSlider.value = 0;
-        rotationValue.textContent = '0°';
+                 // Reset states
+         currentRotation = 0;
+         flippedH = false;
+         flippedV = false;
+         fixedAspect = false;
+         rotationSlider.value = 0;
+         rotationInput.value = 0;
       };
       reader.readAsDataURL(file);
     }
@@ -664,21 +742,34 @@
       updateRotation(currentRotation + 90);
     }
 
-    function updateRotation(value) {
-      if (!cropper) return;
-      // Normalize rotation value
-      while (value > 180) value -= 360;
-      while (value < -180) value += 360;
-      
-      currentRotation = value;
-      cropper.rotateTo(currentRotation);
-      rotationSlider.value = currentRotation;
-      rotationValue.textContent = `${currentRotation}°`;
-    }
+         function updateRotation(value) {
+       if (!cropper) return;
+       // Normalize rotation value
+       while (value > 180) value -= 360;
+       while (value < -180) value += 360;
+       
+       currentRotation = value;
+       cropper.rotateTo(currentRotation);
+       rotationSlider.value = currentRotation;
+       rotationInput.value = currentRotation;
+     }
 
-    rotationSlider.addEventListener('input', (e) => {
-      updateRotation(parseInt(e.target.value));
-    });
+     rotationSlider.addEventListener('input', (e) => {
+       updateRotation(parseInt(e.target.value));
+     });
+
+     rotationInput.addEventListener('input', (e) => {
+       const value = parseInt(e.target.value) || 0;
+       updateRotation(value);
+     });
+
+     rotationInput.addEventListener('blur', (e) => {
+       const value = parseInt(e.target.value) || 0;
+       // Clamp value to valid range
+       if (value > 180) e.target.value = 180;
+       if (value < -180) e.target.value = -180;
+       updateRotation(parseInt(e.target.value) || 0);
+     });
 
     function flipHorizontal() {
       if (!cropper) return;
@@ -745,9 +836,9 @@
       flippedV = false;
       fixedAspect = false;
       
-      cropper.reset();
-      rotationSlider.value = 0;
-      rotationValue.textContent = '0°';
+             cropper.reset();
+       rotationSlider.value = 0;
+       rotationInput.value = 0;
       
       // Reset button appearances
       document.querySelectorAll('.controls button').forEach(btn => {
