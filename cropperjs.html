@@ -6,128 +6,953 @@
   <title>Advanced Image Editor</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
     :root {
-  --bg: #ffffff;
-  --text: #111111;
-  --btn-bg: #f5f5f5;
-  --btn-text: #111111;
-  --accent: #4f46e5;
-  --border: #e0e0e0;
-}
+      --bg: #fafafa;
+      --bg-secondary: #ffffff;
+      --text: #1a1a1a;
+      --text-secondary: #6b7280;
+      --btn-bg: #ffffff;
+      --btn-text: #374151;
+      --btn-hover: #f3f4f6;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-light: #e0e7ff;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+    }
 
-[data-theme="dark"] {
-  --bg: #1f1f1f;
-  --text: #f5f5f5;
-  --btn-bg: #2c2c2c;
-  --btn-text: #f5f5f5;
-  --accent: #818cf8;
-  --border: #444;
-}
+    [data-theme="dark"] {
+      --bg: #0f0f0f;
+      --bg-secondary: #1a1a1a;
+      --text: #f9fafb;
+      --text-secondary: #9ca3af;
+      --btn-bg: #1f2937;
+      --btn-text: #f9fafb;
+      --btn-hover: #374151;
+      --accent: #818cf8;
+      --accent-hover: #6366f1;
+      --accent-light: #312e81;
+      --border: #374151;
+      --border-light: #1f2937;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
 
-body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  transition: background 0.3s ease, color 0.3s ease;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  color: var(--accent);
-}
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      line-height: 1.6;
+    }
 
-#image {
-  max-width: 100%;
-  max-height: 60vh;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  margin-top: 1rem;
-}
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
 
-.controls {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-}
+    .main-content {
+      display: flex;
+      width: 100%;
+      gap: 2rem;
+      align-items: flex-start;
+    }
 
-.controls button,
-.controls input[type="file"],
-.controls input[type="range"] {
-  padding: 0.6rem 1rem;
-  font-size: 14px;
-  border: 1px solid var(--border);
-  background-color: var(--btn-bg);
-  color: var(--btn-text);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
+    .left-panel {
+      width: 300px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
-.controls button:hover,
-.controls input[type="file"]:hover {
-  background-color: var(--accent);
-  color: white;
-  border-color: var(--accent);
-}
+    .image-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
 
-input[type="range"] {
-  width: 160px;
-  accent-color: var(--accent);
-}
+    .header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
 
-.slider-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--btn-bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.025em;
+    }
 
-.rotation-value {
-  font-weight: bold;
-  font-size: 1rem;
-  width: 40px;
-  text-align: center;
-}
+    .subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      font-weight: 400;
+    }
 
+    .upload-section {
+      background: var(--bg-secondary);
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
 
+    .upload-section:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      transform: translateY(-2px);
+    }
+
+    .upload-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .upload-section:hover::before {
+      opacity: 0.05;
+    }
+
+    #fileInput {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .upload-content {
+      pointer-events: none;
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .upload-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-subtext {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .image-container {
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      max-width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient);
+    }
+
+    #image {
+      max-width: 100%;
+      max-height: 60vh;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      display: block;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .control-group {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .control-group:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+         .control-group h3 {
+       margin: 0 0 1rem 0;
+       font-size: 1rem;
+       font-weight: 600;
+       color: var(--text);
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       gap: 0.5rem;
+       cursor: pointer;
+       user-select: none;
+       transition: all 0.2s ease;
+     }
+
+     .control-group h3:hover {
+       color: var(--accent);
+     }
+
+     .control-group h3 .collapse-icon {
+       font-size: 0.875rem;
+       transition: transform 0.2s ease;
+     }
+
+     .control-group.collapsed h3 .collapse-icon {
+       transform: rotate(-90deg);
+     }
+
+     .control-group.collapsed .button-grid {
+       display: none;
+     }
+
+     .control-group.collapsed .filters-panel {
+       display: none !important;
+     }
+
+    .button-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .controls button {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .controls button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .controls button:hover::before {
+      left: 100%;
+    }
+
+    .controls button:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .controls button:active {
+      transform: translateY(0);
+    }
+
+    .primary-button {
+      background: var(--accent) !important;
+      color: white !important;
+      border-color: var(--accent) !important;
+      font-weight: 600;
+    }
+
+         .primary-button:hover {
+       background: var(--accent-hover) !important;
+       border-color: var(--accent-hover) !important;
+     }
+
+     .filter-toggle-btn {
+       background: var(--accent) !important;
+       color: white !important;
+       border-color: var(--accent) !important;
+       font-weight: 600;
+     }
+
+     .filter-toggle-btn:hover {
+       background: var(--accent-hover) !important;
+       border-color: var(--accent-hover) !important;
+     }
+
+     .filters-panel {
+       margin-top: 1rem;
+       padding: 1rem;
+       background: var(--bg);
+       border: 1px solid var(--border);
+       border-radius: 8px;
+       animation: slideDown 0.3s ease-out;
+     }
+
+     @keyframes slideDown {
+       from {
+         opacity: 0;
+         transform: translateY(-10px);
+       }
+       to {
+         opacity: 1;
+         transform: translateY(0);
+       }
+     }
+
+           .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+      }
+
+      .filter-btn {
+        padding: 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid var(--border);
+        background: var(--btn-bg);
+        color: var(--btn-text);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 80px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .filter-thumbnail {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        background: var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .filter-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+
+      .filter-btn.active .filter-thumbnail {
+        border: 2px solid var(--accent);
+      }
+
+     .filter-btn:hover {
+       background: var(--accent);
+       color: white;
+       border-color: var(--accent);
+       transform: translateY(-1px);
+     }
+
+          .filter-btn.active {
+       background: var(--accent);
+       color: white;
+       border-color: var(--accent);
+       font-weight: 600;
+     }
+
+     .filter-intensity-control {
+       margin-top: 1rem;
+       padding-top: 1rem;
+       border-top: 1px solid var(--border);
+     }
+
+     .intensity-header {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       margin-bottom: 0.5rem;
+     }
+
+     .intensity-header label {
+       font-weight: 600;
+       color: var(--text);
+       font-size: 0.875rem;
+     }
+
+           .intensity-value {
+        font-weight: 700;
+        font-size: 0.875rem;
+        color: var(--accent);
+        background: var(--accent-light);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        min-width: 40px;
+        text-align: center;
+      }
+
+      .filter-actions {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .apply-filter-btn,
+      .undo-filter-btn {
+        flex: 1;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid var(--border);
+        background: var(--btn-bg);
+        color: var(--btn-text);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+      }
+
+      .apply-filter-btn {
+        background: var(--success) !important;
+        color: white !important;
+        border-color: var(--success) !important;
+      }
+
+      .apply-filter-btn:hover {
+        background: #059669 !important;
+        border-color: #059669 !important;
+        transform: translateY(-1px);
+      }
+
+      .undo-filter-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: var(--border-light) !important;
+        color: var(--text-secondary) !important;
+      }
+
+      .undo-filter-btn:not(:disabled):hover {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+
+           .rotation-controls {
+       background: var(--bg-secondary);
+       border-radius: 12px;
+       padding: 1.5rem;
+       box-shadow: var(--shadow);
+       border: 1px solid var(--border);
+       width: 100%;
+       max-width: 600px;
+       margin-top: 1rem;
+     }
+
+     .rotation-header h3 {
+       margin: 0 0 1rem 0;
+       font-size: 1rem;
+       font-weight: 600;
+       color: var(--text);
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+     }
+
+     .rotation-input-group {
+       display: flex;
+       flex-direction: column;
+       gap: 1rem;
+     }
+
+     .rotation-input-wrapper {
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+       background: var(--bg);
+       border: 1px solid var(--border);
+       border-radius: 8px;
+       padding: 0.5rem;
+       width: fit-content;
+     }
+
+     .rotation-input-wrapper input {
+       border: none;
+       background: transparent;
+       font-size: 1.125rem;
+       font-weight: 600;
+       color: var(--text);
+       width: 80px;
+       text-align: center;
+       outline: none;
+     }
+
+     .rotation-input-wrapper input::-webkit-outer-spin-button,
+     .rotation-input-wrapper input::-webkit-inner-spin-button {
+       -webkit-appearance: none;
+       margin: 0;
+     }
+
+     .rotation-input-wrapper input[type=number] {
+       -moz-appearance: textfield;
+     }
+
+     .degree-symbol {
+       font-size: 1.125rem;
+       font-weight: 600;
+       color: var(--text-secondary);
+     }
+
+     .rotation-slider-wrapper {
+       width: 100%;
+     }
+
+     .slider-group {
+       display: flex;
+       flex-direction: column;
+       gap: 1rem;
+       padding: 1.5rem;
+       background: var(--bg-secondary);
+       border: 1px solid var(--border);
+       border-radius: 12px;
+       box-shadow: var(--shadow);
+       width: 100%;
+       max-width: 400px;
+       margin-top: 1rem;
+     }
+
+     .slider-header {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+     }
+
+     .slider-header label {
+       font-weight: 600;
+       color: var(--text);
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+     }
+
+     .rotation-value {
+       font-weight: 700;
+       font-size: 1.125rem;
+       color: var(--accent);
+       background: var(--accent-light);
+       padding: 0.25rem 0.75rem;
+       border-radius: 6px;
+       min-width: 50px;
+       text-align: center;
+     }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border-light);
+      outline: none;
+      -webkit-appearance: none;
+      transition: all 0.3s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      z-index: 1000;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1) rotate(180deg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      h2 {
+        font-size: 2rem;
+      }
+      
+      .main-content {
+        flex-direction: column;
+      }
+      
+      .left-panel {
+        width: 100%;
+        order: 2;
+      }
+      
+      .image-section {
+        order: 1;
+      }
+      
+      .button-grid {
+        flex-direction: column;
+      }
+      
+      .upload-section {
+        padding: 2rem 1rem;
+      }
+      
+      .theme-toggle {
+        top: 1rem;
+        right: 1rem;
+        width: 45px;
+        height: 45px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .control-group {
+        padding: 1rem;
+      }
+      
+      .slider-group {
+        padding: 1rem;
+      }
+    }
+
+    /* Loading animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading {
+      animation: pulse 2s infinite;
+    }
+
+    /* Smooth scroll behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+
+         /* Focus styles for accessibility */
+     button:focus,
+     input:focus {
+       outline: 2px solid var(--accent);
+       outline-offset: 2px;
+     }
+
+     /* Ensure filters are visible on cropper */
+     .cropper-container {
+       filter: inherit;
+     }
   </style>
 </head>
 <body data-theme="light">
-  <h2>🖼️ Advanced Image Editor</h2>
-  <input type="file" id="fileInput" accept="image/*" />
-
-  <div>
-    <img id="image" src="" alt="Upload to edit" />
+  <div class="theme-toggle" onclick="toggleTheme()">
+    🌓
   </div>
 
-  <div class="controls">
-    <button onclick="rotateLeft()">↺ Rotate Left</button>
-    <button onclick="rotateRight()">↻ Rotate Right</button>
-    <button onclick="flipHorizontal()">⇋ Flip Horizontal</button>
-    <button onclick="flipVertical()">⇅ Flip Vertical</button>
-    <button onclick="zoomIn()">➕ Zoom In</button>
-    <button onclick="zoomOut()">➖ Zoom Out</button>
-    <button onclick="toggleAspectRatio()">🔒 Toggle Aspect</button>
-    <button onclick="toggleTheme()">🌓 Toggle Theme</button>
-    <button onclick="download()">⬇️ Download</button>
-  </div>
+  <div class="container">
+    <div class="header">
+      <h2>🖼️ Advanced Image Editor</h2>
+      <p class="subtitle">Transform, crop, and enhance your images with professional tools</p>
+    </div>
 
-  <div class="slider-group" style="margin-top: 10px;">
-    <label for="rotationSlider">Rotation:</label>
-    <input type="range" id="rotationSlider" min="-180" max="180" value="0" />
-    <div class="rotation-value" id="rotationValue">0°</div>
+    <div class="main-content">
+      <div class="left-panel">
+        <div class="controls" id="controlsSection" style="display: none;">
+                     <div class="control-group">
+             <h3 onclick="togglePanel(this.parentElement)">
+               <span>🔄 Transform</span>
+               <span class="collapse-icon">▼</span>
+             </h3>
+             <div class="button-grid">
+               <button onclick="rotateLeft()">↺ Rotate Left</button>
+               <button onclick="rotateRight()">↻ Rotate Right</button>
+               <button onclick="flipHorizontal()">⇋ Flip H</button>
+               <button onclick="flipVertical()">⇅ Flip V</button>
+             </div>
+           </div>
+
+           <div class="control-group">
+             <h3 onclick="togglePanel(this.parentElement)">
+               <span>🔍 Zoom</span>
+               <span class="collapse-icon">▼</span>
+             </h3>
+             <div class="button-grid">
+               <button onclick="zoomIn()">➕ Zoom In</button>
+               <button onclick="zoomOut()">➖ Zoom Out</button>
+               <button onclick="resetZoom()">🎯 Reset</button>
+               <button onclick="fitToContainer()">📐 Fit</button>
+             </div>
+           </div>
+
+                      <div class="control-group">
+              <h3 onclick="togglePanel(this.parentElement)">
+                <span>⚙️ Settings</span>
+                <span class="collapse-icon">▼</span>
+              </h3>
+              <div class="button-grid">
+                <button onclick="toggleAspectRatio()">🔒 Lock Aspect</button>
+                <button onclick="resetImage()">↩️ Reset All</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <h3 onclick="togglePanel(this.parentElement)">
+                <span>🎨 Filters</span>
+                <span class="collapse-icon">▼</span>
+              </h3>
+              <div class="button-grid">
+                <button onclick="toggleFilters()" class="filter-toggle-btn">🎨 Quick Filters</button>
+              </div>
+                            <div class="filters-panel" id="filtersPanel" style="display: none;">
+                 <div class="filter-grid">
+                   <button onclick="applyFilter('none')" class="filter-btn active" data-filter="none">
+                     <div class="filter-thumbnail">
+                       <span>🖼️</span>
+                     </div>
+                     <span>Original</span>
+                   </button>
+                   <button onclick="applyFilter('grayscale')" class="filter-btn" data-filter="grayscale">
+                     <div class="filter-thumbnail">
+                       <span>⚫</span>
+                     </div>
+                     <span>Grayscale</span>
+                   </button>
+                   <button onclick="applyFilter('sepia')" class="filter-btn" data-filter="sepia">
+                     <div class="filter-thumbnail">
+                       <span>🟤</span>
+                     </div>
+                     <span>Sepia</span>
+                   </button>
+                   <button onclick="applyFilter('invert')" class="filter-btn" data-filter="invert">
+                     <div class="filter-thumbnail">
+                       <span>⚪</span>
+                     </div>
+                     <span>Invert</span>
+                   </button>
+                   <button onclick="applyFilter('blur')" class="filter-btn" data-filter="blur">
+                     <div class="filter-thumbnail">
+                       <span>🌫️</span>
+                     </div>
+                     <span>Blur</span>
+                   </button>
+                   <button onclick="applyFilter('brightness')" class="filter-btn" data-filter="brightness">
+                     <div class="filter-thumbnail">
+                       <span>☀️</span>
+                     </div>
+                     <span>Bright</span>
+                   </button>
+                   <button onclick="applyFilter('contrast')" class="filter-btn" data-filter="contrast">
+                     <div class="filter-thumbnail">
+                       <span>🎭</span>
+                     </div>
+                     <span>Contrast</span>
+                   </button>
+                   <button onclick="applyFilter('saturate')" class="filter-btn" data-filter="saturate">
+                     <div class="filter-thumbnail">
+                       <span>🌈</span>
+                     </div>
+                     <span>Saturate</span>
+                   </button>
+                   <button onclick="applyFilter('hue-rotate')" class="filter-btn" data-filter="hue-rotate">
+                     <div class="filter-thumbnail">
+                       <span>🎨</span>
+                     </div>
+                     <span>Hue</span>
+                   </button>
+                   <button onclick="applyFilter('vintage')" class="filter-btn" data-filter="vintage">
+                     <div class="filter-thumbnail">
+                       <span>📷</span>
+                     </div>
+                     <span>Vintage</span>
+                   </button>
+                   <button onclick="applyFilter('warm')" class="filter-btn" data-filter="warm">
+                     <div class="filter-thumbnail">
+                       <span>🔥</span>
+                     </div>
+                     <span>Warm</span>
+                   </button>
+                   <button onclick="applyFilter('cool')" class="filter-btn" data-filter="cool">
+                     <div class="filter-thumbnail">
+                       <span>❄️</span>
+                     </div>
+                     <span>Cool</span>
+                   </button>
+                   <button onclick="applyFilter('sharpen')" class="filter-btn" data-filter="sharpen">
+                     <div class="filter-thumbnail">
+                       <span>🔪</span>
+                     </div>
+                     <span>Sharpen</span>
+                   </button>
+                 </div>
+                 <div class="filter-intensity-control">
+                   <div class="intensity-header">
+                     <label for="filterIntensity">Intensity</label>
+                     <span class="intensity-value" id="intensityValue">100%</span>
+                   </div>
+                   <input type="range" id="filterIntensity" min="0" max="100" value="100" />
+                 </div>
+                 <div class="filter-actions">
+                   <button onclick="applyCurrentFilterToStack()" class="apply-filter-btn">✅ Apply Filter</button>
+                   <button onclick="undoLastFilter()" class="undo-filter-btn" disabled>↩️ Undo</button>
+                 </div>
+               </div>
+            </div>
+
+           <div class="control-group">
+             <h3 onclick="togglePanel(this.parentElement)">
+               <span>💾 Export</span>
+               <span class="collapse-icon">▼</span>
+             </h3>
+             <div class="button-grid">
+               <button class="primary-button" onclick="download()">⬇️ Download PNG</button>
+               <button onclick="downloadJPG()">📷 Download JPG</button>
+             </div>
+           </div>
+
+          
+        </div>
+      </div>
+
+      <div class="image-section">
+        <div class="upload-section" id="uploadSection">
+          <input type="file" id="fileInput" accept="image/*" />
+          <div class="upload-content">
+            <span class="upload-icon">📸</span>
+            <div class="upload-text">Drop your image here or click to browse</div>
+            <div class="upload-subtext">Supports JPG, PNG, GIF up to 10MB</div>
+          </div>
+        </div>
+
+                 <div class="image-container" id="imageContainer" style="display: none;">
+           <img id="image" src="" alt="Upload to edit" />
+         </div>
+
+         <div class="rotation-controls" id="rotationSection" style="display: none;">
+           <div class="rotation-header">
+             <h3>🔄 Precise Rotation</h3>
+           </div>
+           <div class="rotation-input-group">
+             <div class="rotation-input-wrapper">
+               <input type="number" id="rotationInput" min="-180" max="180" value="0" step="1" placeholder="0" />
+               <span class="degree-symbol">°</span>
+             </div>
+             <div class="rotation-slider-wrapper">
+               <input type="range" id="rotationSlider" min="-180" max="180" value="0" />
+             </div>
+           </div>
+         </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
@@ -140,33 +965,110 @@ input[type="range"] {
 
     const image = document.getElementById('image');
     const fileInput = document.getElementById('fileInput');
-    const rotationSlider = document.getElementById('rotationSlider');
-    const rotationValue = document.getElementById('rotationValue');
-    const body = document.body;
+         const rotationSlider = document.getElementById('rotationSlider');
+     const rotationInput = document.getElementById('rotationInput');
+     const body = document.body;
+     const uploadSection = document.getElementById('uploadSection');
+     const imageContainer = document.getElementById('imageContainer');
+     const controlsSection = document.getElementById('controlsSection');
+     const rotationSection = document.getElementById('rotationSection');
+     const filtersPanel = document.getElementById('filtersPanel');
+     const filterIntensity = document.getElementById('filterIntensity');
+     const intensityValue = document.getElementById('intensityValue');
 
-    fileInput.addEventListener('change', (e) => {
+    // Enhanced file input handling with drag and drop
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    // Drag and drop functionality
+    uploadSection.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadSection.style.borderColor = 'var(--accent)';
+      uploadSection.style.background = 'var(--accent-light)';
+    });
+
+    uploadSection.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      uploadSection.style.borderColor = 'var(--border)';
+      uploadSection.style.background = 'var(--bg-secondary)';
+    });
+
+    uploadSection.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadSection.style.borderColor = 'var(--border)';
+      uploadSection.style.background = 'var(--bg-secondary)';
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    function handleFileSelect(e) {
       const file = e.target.files[0];
       if (!file) return;
+      handleFile(file);
+    }
+
+    function handleFile(file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+
+      // Validate file size (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10MB.');
+        return;
+      }
 
       const reader = new FileReader();
       reader.onload = () => {
         image.src = reader.result;
+        
+                 // Show image container and controls
+         uploadSection.style.display = 'none';
+         imageContainer.style.display = 'block';
+         controlsSection.style.display = 'flex';
+         rotationSection.style.display = 'block';
 
-        if (cropper) cropper.destroy();
-        cropper = new Cropper(image, {
-          viewMode: 1,
-          dragMode: 'move',
-          autoCropArea: 1,
-          responsive: true,
-          background: false,
-        });
+                 // Initialize cropper
+         if (cropper) cropper.destroy();
+         cropper = new Cropper(image, {
+           viewMode: 1,
+           dragMode: 'move',
+           autoCropArea: 1,
+           responsive: true,
+           background: false,
+           checkOrientation: false,
+           modal: true,
+           guides: true,
+           center: true,
+           highlight: false,
+           cropBoxMovable: true,
+           cropBoxResizable: true,
+           toggleDragModeOnDblclick: false,
+         });
+         
+               // Apply any existing filter after cropper is initialized
+      setTimeout(() => {
+        if (currentFilter !== 'none') {
+          applyCurrentFilter();
+        }
+        // Generate filter thumbnails
+        generateFilterThumbnails();
+      }, 100);
 
-        currentRotation = 0;
-        rotationSlider.value = 0;
-        rotationValue.textContent = '0°';
+                 // Reset states
+         currentRotation = 0;
+         flippedH = false;
+         flippedV = false;
+         fixedAspect = false;
+         rotationSlider.value = 0;
+         rotationInput.value = 0;
       };
       reader.readAsDataURL(file);
-    });
+    }
 
     function rotateLeft() {
       updateRotation(currentRotation - 90);
@@ -176,28 +1078,55 @@ input[type="range"] {
       updateRotation(currentRotation + 90);
     }
 
-    function updateRotation(value) {
-      if (!cropper) return;
-      currentRotation = value;
-      cropper.rotateTo(currentRotation);
-      rotationSlider.value = currentRotation;
-      rotationValue.textContent = `${currentRotation}°`;
-    }
+         function updateRotation(value) {
+       if (!cropper) return;
+       // Normalize rotation value
+       while (value > 180) value -= 360;
+       while (value < -180) value += 360;
+       
+       currentRotation = value;
+       cropper.rotateTo(currentRotation);
+       rotationSlider.value = currentRotation;
+       rotationInput.value = currentRotation;
+     }
 
-    rotationSlider.addEventListener('input', (e) => {
-      updateRotation(parseInt(e.target.value));
-    });
+     rotationSlider.addEventListener('input', (e) => {
+       updateRotation(parseInt(e.target.value));
+     });
+
+     rotationInput.addEventListener('input', (e) => {
+       const value = parseInt(e.target.value) || 0;
+       updateRotation(value);
+     });
+
+     rotationInput.addEventListener('blur', (e) => {
+       const value = parseInt(e.target.value) || 0;
+       // Clamp value to valid range
+       if (value > 180) e.target.value = 180;
+       if (value < -180) e.target.value = -180;
+       updateRotation(parseInt(e.target.value) || 0);
+     });
 
     function flipHorizontal() {
       if (!cropper) return;
       flippedH = !flippedH;
       cropper.scaleX(flippedH ? -1 : 1);
+      
+      // Update button appearance
+      const button = event.target;
+      button.style.background = flippedH ? 'var(--accent)' : 'var(--btn-bg)';
+      button.style.color = flippedH ? 'white' : 'var(--btn-text)';
     }
 
     function flipVertical() {
       if (!cropper) return;
       flippedV = !flippedV;
       cropper.scaleY(flippedV ? -1 : 1);
+      
+      // Update button appearance
+      const button = event.target;
+      button.style.background = flippedV ? 'var(--accent)' : 'var(--btn-bg)';
+      button.style.color = flippedV ? 'white' : 'var(--btn-text)';
     }
 
     function zoomIn() {
@@ -210,25 +1139,765 @@ input[type="range"] {
       cropper.zoom(-0.1);
     }
 
+    function resetZoom() {
+      if (!cropper) return;
+      cropper.reset();
+    }
+
+    function fitToContainer() {
+      if (!cropper) return;
+      cropper.reset();
+      cropper.clear();
+      cropper.crop();
+    }
+
     function toggleAspectRatio() {
       if (!cropper) return;
       fixedAspect = !fixedAspect;
       cropper.setAspectRatio(fixedAspect ? 1 : NaN);
+      
+      // Update button appearance
+      const button = event.target;
+      button.style.background = fixedAspect ? 'var(--accent)' : 'var(--btn-bg)';
+      button.style.color = fixedAspect ? 'white' : 'var(--btn-text)';
+      button.textContent = fixedAspect ? '🔓 Unlock Aspect' : '🔒 Lock Aspect';
     }
+
+         function resetImage() {
+       if (!cropper) return;
+       
+               // Reset all transformations
+        currentRotation = 0;
+        flippedH = false;
+        flippedV = false;
+        fixedAspect = false;
+        currentFilter = 'none';
+        currentIntensity = 100;
+        appliedFilters = [];
+        filterHistory = [];
+        historyIndex = -1;
+       
+       cropper.reset();
+       rotationSlider.value = 0;
+       rotationInput.value = 0;
+       
+               // Reset image filters
+        const image = document.getElementById('image');
+        image.style.filter = 'none';
+        
+        // Reset cropper container filters
+        const cropperContainer = document.querySelector('.cropper-container');
+        if (cropperContainer) {
+          cropperContainer.style.filter = 'none';
+          const cropperCanvas = cropperContainer.querySelector('canvas');
+          if (cropperCanvas) {
+            cropperCanvas.style.filter = 'none';
+          }
+        }
+       
+       // Reset button appearances
+       document.querySelectorAll('.controls button').forEach(btn => {
+         if (!btn.classList.contains('primary-button')) {
+           btn.style.background = 'var(--btn-bg)';
+           btn.style.color = 'var(--btn-text)';
+         }
+       });
+       
+       // Reset filter buttons
+       document.querySelectorAll('.filter-btn').forEach(btn => {
+         btn.classList.remove('active');
+       });
+       document.querySelector('.filter-btn').classList.add('active');
+       
+               // Reset intensity slider
+        filterIntensity.value = 100;
+        intensityValue.textContent = '100%';
+        
+        // Update undo button
+        updateUndoButton();
+        
+        // Regenerate filter thumbnails
+        setTimeout(() => {
+          generateFilterThumbnails();
+        }, 200);
+       
+       // Reset button texts
+       document.querySelector('button[onclick="toggleAspectRatio()"]').textContent = '🔒 Lock Aspect';
+     }
 
     function toggleTheme() {
       const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       body.setAttribute('data-theme', theme);
+      
+      // Store theme preference
+      localStorage.setItem('theme', theme);
     }
 
     function download() {
       if (!cropper) return;
-      const canvas = cropper.getCroppedCanvas({ fillColor: '#fff' });
+      
+      console.log('Downloading PNG with filters:', appliedFilters);
+      
+      const canvas = cropper.getCroppedCanvas({
+        fillColor: '#fff',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+      });
+      
+      // Apply filters to the canvas if any are applied
+      if (appliedFilters.length > 0) {
+        applyFiltersToCanvas(canvas, appliedFilters);
+      }
+      
       const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-      link.download = 'edited-image.png';
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.download = `edited-image-${Date.now()}.png`;
       link.click();
     }
+
+    function downloadJPG() {
+      if (!cropper) return;
+      
+      console.log('Downloading JPG with filters:', appliedFilters);
+      
+      const canvas = cropper.getCroppedCanvas({
+        fillColor: '#fff',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+      });
+      
+      // Apply filters to the canvas if any are applied
+      if (appliedFilters.length > 0) {
+        applyFiltersToCanvas(canvas, appliedFilters);
+      }
+      
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/jpeg', 0.9);
+      link.download = `edited-image-${Date.now()}.jpg`;
+      link.click();
+    }
+
+               // Filter functionality
+      let currentFilter = 'none';
+      let currentIntensity = 100;
+      let appliedFilters = [];
+      let filterHistory = [];
+      let historyIndex = -1;
+
+     function toggleFilters() {
+       const panel = document.getElementById('filtersPanel');
+       const isVisible = panel.style.display !== 'none';
+       panel.style.display = isVisible ? 'none' : 'block';
+     }
+
+           function applyFilter(filterType) {
+        if (!cropper) return;
+        
+        currentFilter = filterType;
+        
+        // Only apply current filter for preview, don't overwrite applied filters
+        if (appliedFilters.length === 0) {
+          applyCurrentFilter();
+        } else {
+          // Show preview of what the filter would look like when applied
+          showFilterPreview();
+        }
+        
+        // Update active button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      function showFilterPreview() {
+        if (!cropper || currentFilter === 'none') return;
+        
+        const image = document.getElementById('image');
+        const intensity = currentIntensity / 100;
+        let previewFilter = 'none';
+        
+        // Create preview filter (current filter + all applied filters)
+        const allFilters = [...appliedFilters, { type: currentFilter, intensity: currentIntensity }];
+        const filterStrings = allFilters.map(filter => {
+          const filterIntensity = filter.intensity / 100;
+          switch(filter.type) {
+            case 'grayscale':
+              return `grayscale(${filterIntensity * 100}%)`;
+            case 'sepia':
+              return `sepia(${filterIntensity * 100}%)`;
+            case 'invert':
+              return `invert(${filterIntensity * 100}%)`;
+            case 'blur':
+              return `blur(${filterIntensity * 4}px)`;
+            case 'brightness':
+              return `brightness(${100 + filterIntensity * 100}%)`;
+            case 'contrast':
+              return `contrast(${100 + filterIntensity * 100}%)`;
+            case 'saturate':
+              return `saturate(${100 + filterIntensity * 200}%)`;
+            case 'hue-rotate':
+              return `hue-rotate(${filterIntensity * 360}deg)`;
+            case 'vintage':
+              return `sepia(${filterIntensity * 50}%) contrast(${100 + filterIntensity * 20}%) brightness(${100 - filterIntensity * 10}%)`;
+            case 'warm':
+              return `sepia(${filterIntensity * 30}%) saturate(${100 + filterIntensity * 40}%) brightness(${100 + filterIntensity * 10}%)`;
+            case 'cool':
+              return `hue-rotate(${filterIntensity * 180}deg) saturate(${100 - filterIntensity * 20}%) brightness(${100 - filterIntensity * 5}%)`;
+            case 'sharpen':
+              return `contrast(${100 + filterIntensity * 50}%) saturate(${100 + filterIntensity * 30}%)`;
+            default:
+              return 'none';
+          }
+        });
+        
+        previewFilter = filterStrings.join(' ');
+        
+        // Apply preview filter
+        image.style.filter = previewFilter;
+        
+        // Apply to cropper container
+        const cropperContainer = document.querySelector('.cropper-container');
+        if (cropperContainer) {
+          cropperContainer.style.filter = previewFilter;
+          const cropperCanvas = cropperContainer.querySelector('canvas');
+          if (cropperCanvas) {
+            cropperCanvas.style.filter = previewFilter;
+          }
+        }
+      }
+
+      function applyCurrentFilterToStack() {
+        if (!cropper || currentFilter === 'none') return;
+        
+        // Add current filter to applied filters
+        const filterToApply = {
+          type: currentFilter,
+          intensity: currentIntensity
+        };
+        
+        appliedFilters.push(filterToApply);
+        
+        // Save to history
+        saveToHistory();
+        
+        // Apply all filters
+        applyAllFilters();
+        
+        // Update undo button
+        updateUndoButton();
+        
+        // Show feedback
+        showFilterAppliedFeedback();
+        
+        // Reset current filter to 'none' after applying
+        currentFilter = 'none';
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        document.querySelector('.filter-btn[data-filter="none"]').classList.add('active');
+      }
+
+      function undoLastFilter() {
+        if (appliedFilters.length === 0) return;
+        
+        // Remove last filter
+        appliedFilters.pop();
+        
+        // Save to history
+        saveToHistory();
+        
+        // Apply remaining filters
+        applyAllFilters();
+        
+        // Update undo button
+        updateUndoButton();
+      }
+
+      function applyAllFilters() {
+        if (!cropper) return;
+        
+        const image = document.getElementById('image');
+        let combinedFilter = 'none';
+        
+        if (appliedFilters.length > 0) {
+          const filterStrings = appliedFilters.map(filter => {
+            const intensity = filter.intensity / 100;
+            switch(filter.type) {
+              case 'grayscale':
+                return `grayscale(${intensity * 100}%)`;
+              case 'sepia':
+                return `sepia(${intensity * 100}%)`;
+              case 'invert':
+                return `invert(${intensity * 100}%)`;
+              case 'blur':
+                return `blur(${intensity * 4}px)`;
+              case 'brightness':
+                return `brightness(${100 + intensity * 100}%)`;
+              case 'contrast':
+                return `contrast(${100 + intensity * 100}%)`;
+              case 'saturate':
+                return `saturate(${100 + intensity * 200}%)`;
+              case 'hue-rotate':
+                return `hue-rotate(${intensity * 360}deg)`;
+              case 'vintage':
+                return `sepia(${intensity * 50}%) contrast(${100 + intensity * 20}%) brightness(${100 - intensity * 10}%)`;
+              case 'warm':
+                return `sepia(${intensity * 30}%) saturate(${100 + intensity * 40}%) brightness(${100 + intensity * 10}%)`;
+              case 'cool':
+                return `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
+              case 'sharpen':
+                return `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;
+              default:
+                return 'none';
+            }
+          });
+          
+          combinedFilter = filterStrings.join(' ');
+        }
+        
+        // Apply combined filter
+        image.style.filter = combinedFilter;
+        
+        // Apply to cropper container
+        const cropperContainer = document.querySelector('.cropper-container');
+        if (cropperContainer) {
+          cropperContainer.style.filter = combinedFilter;
+          const cropperCanvas = cropperContainer.querySelector('canvas');
+          if (cropperCanvas) {
+            cropperCanvas.style.filter = combinedFilter;
+          }
+        }
+      }
+
+      function saveToHistory() {
+        // Remove any history after current index
+        filterHistory = filterHistory.slice(0, historyIndex + 1);
+        
+        // Add current state to history
+        filterHistory.push([...appliedFilters]);
+        historyIndex++;
+        
+        // Limit history size
+        if (filterHistory.length > 20) {
+          filterHistory.shift();
+          historyIndex--;
+        }
+      }
+
+      function updateUndoButton() {
+        const undoBtn = document.querySelector('.undo-filter-btn');
+        if (undoBtn) {
+          undoBtn.disabled = appliedFilters.length === 0;
+        }
+      }
+
+      function showFilterAppliedFeedback() {
+        const applyBtn = document.querySelector('.apply-filter-btn');
+        if (applyBtn) {
+          const originalText = applyBtn.textContent;
+          applyBtn.textContent = '✅ Applied!';
+          applyBtn.style.background = '#059669';
+          
+          setTimeout(() => {
+            applyBtn.textContent = originalText;
+            applyBtn.style.background = '';
+          }, 1000);
+        }
+      }
+
+           function applyCurrentFilter() {
+        if (!cropper) return;
+        
+        const image = document.getElementById('image');
+        const intensity = currentIntensity / 100;
+        let filterValue = 'none';
+        
+        // Apply the selected filter with intensity
+        switch(currentFilter) {
+          case 'grayscale':
+            filterValue = `grayscale(${intensity * 100}%)`;
+            break;
+          case 'sepia':
+            filterValue = `sepia(${intensity * 100}%)`;
+            break;
+          case 'invert':
+            filterValue = `invert(${intensity * 100}%)`;
+            break;
+          case 'blur':
+            filterValue = `blur(${intensity * 4}px)`;
+            break;
+          case 'brightness':
+            filterValue = `brightness(${100 + intensity * 100}%)`;
+            break;
+          case 'contrast':
+            filterValue = `contrast(${100 + intensity * 100}%)`;
+            break;
+          case 'saturate':
+            filterValue = `saturate(${100 + intensity * 200}%)`;
+            break;
+          case 'hue-rotate':
+            filterValue = `hue-rotate(${intensity * 360}deg)`;
+            break;
+          case 'vintage':
+            filterValue = `sepia(${intensity * 50}%) contrast(${100 + intensity * 20}%) brightness(${100 - intensity * 10}%)`;
+            break;
+          case 'warm':
+            filterValue = `sepia(${intensity * 30}%) saturate(${100 + intensity * 40}%) brightness(${100 + intensity * 10}%)`;
+            break;
+          case 'cool':
+            filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
+            break;
+          case 'sharpen':
+            filterValue = `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;
+            break;
+          default:
+            filterValue = 'none';
+            break;
+        }
+        
+        // Apply filter to both image and cropper container
+        image.style.filter = filterValue;
+        
+        // Apply to cropper container and all its children
+        const cropperContainer = document.querySelector('.cropper-container');
+        if (cropperContainer) {
+          cropperContainer.style.filter = filterValue;
+          // Also apply to the cropper canvas
+          const cropperCanvas = cropperContainer.querySelector('canvas');
+          if (cropperCanvas) {
+            cropperCanvas.style.filter = filterValue;
+          }
+        }
+      }
+
+           // Generate filter thumbnails
+      function generateFilterThumbnails() {
+        if (!cropper) return;
+        
+        const filters = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness', 'contrast', 'saturate', 'hue-rotate', 'vintage', 'warm', 'cool', 'sharpen'];
+        
+        filters.forEach(filterType => {
+          const button = document.querySelector(`[data-filter="${filterType}"]`);
+          if (!button) return;
+          
+          const thumbnail = button.querySelector('.filter-thumbnail');
+          if (!thumbnail) return;
+          
+          // Create a small canvas for the thumbnail
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = 40;
+          canvas.height = 40;
+          
+          // Get the current image
+          const image = document.getElementById('image');
+          if (!image.complete || !image.src) return;
+          
+          // Draw the image to canvas
+          ctx.drawImage(image, 0, 0, 40, 40);
+          
+          // Create image element for thumbnail
+          const img = document.createElement('img');
+          img.src = canvas.toDataURL();
+          
+          // Apply filter based on type
+          const intensity = 1; // Use full intensity for thumbnails
+          let filterValue = 'none';
+          
+          switch(filterType) {
+            case 'grayscale':
+              filterValue = `grayscale(${intensity * 100}%)`;
+              break;
+            case 'sepia':
+              filterValue = `sepia(${intensity * 100}%)`;
+              break;
+            case 'invert':
+              filterValue = `invert(${intensity * 100}%)`;
+              break;
+            case 'blur':
+              filterValue = `blur(${intensity * 2}px)`;
+              break;
+            case 'brightness':
+              filterValue = `brightness(${100 + intensity * 100}%)`;
+              break;
+            case 'contrast':
+              filterValue = `contrast(${100 + intensity * 100}%)`;
+              break;
+            case 'saturate':
+              filterValue = `saturate(${100 + intensity * 200}%)`;
+              break;
+            case 'hue-rotate':
+              filterValue = `hue-rotate(${intensity * 180}deg)`;
+              break;
+            case 'vintage':
+              filterValue = `sepia(${intensity * 50}%) contrast(${100 + intensity * 20}%) brightness(${100 - intensity * 10}%)`;
+              break;
+            case 'warm':
+              filterValue = `sepia(${intensity * 30}%) saturate(${100 + intensity * 40}%) brightness(${100 + intensity * 10}%)`;
+              break;
+            case 'cool':
+              filterValue = `hue-rotate(${intensity * 180}deg) saturate(${100 - intensity * 20}%) brightness(${100 - intensity * 5}%)`;
+              break;
+            case 'sharpen':
+              filterValue = `contrast(${100 + intensity * 50}%) saturate(${100 + intensity * 30}%)`;
+              break;
+            default:
+              filterValue = 'none';
+              break;
+          }
+          
+          img.style.filter = filterValue;
+          
+          // Clear thumbnail and add image
+          thumbnail.innerHTML = '';
+          thumbnail.appendChild(img);
+        });
+      }
+
+      // Intensity slider event listener
+      filterIntensity.addEventListener('input', (e) => {
+        currentIntensity = parseInt(e.target.value);
+        intensityValue.textContent = `${currentIntensity}%`;
+        
+        if (appliedFilters.length === 0) {
+          applyCurrentFilter();
+        } else {
+          showFilterPreview();
+        }
+      });
+
+           // Panel collapse functionality
+      function togglePanel(panel) {
+        panel.classList.toggle('collapsed');
+        
+        // Store panel state in localStorage
+        const panelId = panel.querySelector('h3 span').textContent.trim();
+        const isCollapsed = panel.classList.contains('collapsed');
+        localStorage.setItem(`panel_${panelId}`, isCollapsed ? 'collapsed' : 'expanded');
+      }
+
+      // Function to apply filters to canvas
+      function applyFiltersToCanvas(canvas, filters) {
+        console.log('Applying filters to canvas:', filters);
+        
+        if (filters.length === 0) {
+          console.log('No filters to apply');
+          return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        
+        // Apply each filter in sequence
+        filters.forEach(filter => {
+          const intensity = filter.intensity / 100;
+          console.log(`Applying ${filter.type} filter with intensity: ${intensity}`);
+          
+          switch(filter.type) {
+            case 'grayscale':
+              applyGrayscaleFilter(data, intensity);
+              break;
+            case 'sepia':
+              applySepiaFilter(data, intensity);
+              break;
+            case 'invert':
+              applyInvertFilter(data, intensity);
+              break;
+            case 'brightness':
+              applyBrightnessFilter(data, intensity);
+              break;
+            case 'contrast':
+              applyContrastFilter(data, intensity);
+              break;
+            case 'saturate':
+              applySaturateFilter(data, intensity);
+              break;
+            case 'hue-rotate':
+              applyHueRotateFilter(data, intensity);
+              break;
+            case 'vintage':
+              applyVintageFilter(data, intensity);
+              break;
+            case 'warm':
+              applyWarmFilter(data, intensity);
+              break;
+            case 'cool':
+              applyCoolFilter(data, intensity);
+              break;
+            case 'sharpen':
+              applySharpenFilter(data, intensity);
+              break;
+            default:
+              console.log(`Unknown filter type: ${filter.type}`);
+          }
+        });
+        
+        ctx.putImageData(imageData, 0, 0);
+        console.log('Filters applied to canvas');
+      }
+      
+      // Individual filter functions
+      function applyGrayscaleFilter(data, intensity) {
+        console.log(`Applying grayscale with intensity: ${intensity}`);
+        for (let i = 0; i < data.length; i += 4) {
+          const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+          data[i] = data[i] * (1 - intensity) + gray * intensity;
+          data[i + 1] = data[i + 1] * (1 - intensity) + gray * intensity;
+          data[i + 2] = data[i + 2] * (1 - intensity) + gray * intensity;
+        }
+        console.log('Grayscale filter applied');
+      }
+      
+      function applySepiaFilter(data, intensity) {
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          
+          const sr = r * 0.393 + g * 0.769 + b * 0.189;
+          const sg = r * 0.349 + g * 0.686 + b * 0.168;
+          const sb = r * 0.272 + g * 0.534 + b * 0.131;
+          
+          data[i] = data[i] * (1 - intensity) + Math.min(255, sr) * intensity;
+          data[i + 1] = data[i + 1] * (1 - intensity) + Math.min(255, sg) * intensity;
+          data[i + 2] = data[i + 2] * (1 - intensity) + Math.min(255, sb) * intensity;
+        }
+      }
+      
+      function applyInvertFilter(data, intensity) {
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = data[i] * (1 - intensity) + (255 - data[i]) * intensity;
+          data[i + 1] = data[i + 1] * (1 - intensity) + (255 - data[i + 1]) * intensity;
+          data[i + 2] = data[i + 2] * (1 - intensity) + (255 - data[i + 2]) * intensity;
+        }
+      }
+      
+      function applyBrightnessFilter(data, intensity) {
+        const factor = 1 + intensity;
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = Math.min(255, data[i] * factor);
+          data[i + 1] = Math.min(255, data[i + 1] * factor);
+          data[i + 2] = Math.min(255, data[i + 2] * factor);
+        }
+      }
+      
+      function applyContrastFilter(data, intensity) {
+        const factor = 1 + intensity;
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = Math.min(255, Math.max(0, ((data[i] - 128) * factor) + 128));
+          data[i + 1] = Math.min(255, Math.max(0, ((data[i + 1] - 128) * factor) + 128));
+          data[i + 2] = Math.min(255, Math.max(0, ((data[i + 2] - 128) * factor) + 128));
+        }
+      }
+      
+      function applySaturateFilter(data, intensity) {
+        const factor = 1 + intensity;
+        for (let i = 0; i < data.length; i += 4) {
+          const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+          data[i] = Math.min(255, gray + (data[i] - gray) * factor);
+          data[i + 1] = Math.min(255, gray + (data[i + 1] - gray) * factor);
+          data[i + 2] = Math.min(255, gray + (data[i + 2] - gray) * factor);
+        }
+      }
+      
+      function applyHueRotateFilter(data, intensity) {
+        const angle = intensity * Math.PI * 2;
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          
+          data[i] = Math.min(255, Math.max(0, r * (0.213 + cos * 0.787 - sin * 0.213) + g * (0.213 - cos * 0.213 + sin * 0.143) + b * (0.213 - cos * 0.213 - sin * 0.787)));
+          data[i + 1] = Math.min(255, Math.max(0, r * (0.715 - cos * 0.715 - sin * 0.715) + g * (0.715 + cos * 0.285 + sin * 0.140) + b * (0.715 - cos * 0.715 + sin * 0.575)));
+          data[i + 2] = Math.min(255, Math.max(0, r * (0.072 - cos * 0.072 + sin * 0.928) + g * (0.072 - cos * 0.072 - sin * 0.283) + b * (0.072 + cos * 0.928 + sin * 0.212)));
+        }
+      }
+      
+      function applyVintageFilter(data, intensity) {
+        applySepiaFilter(data, intensity * 0.5);
+        applyContrastFilter(data, intensity * 0.2);
+        applyBrightnessFilter(data, -intensity * 0.1);
+      }
+      
+      function applyWarmFilter(data, intensity) {
+        applyHueRotateFilter(data, intensity * 0.1);
+        applySaturateFilter(data, intensity * 0.3);
+        applyBrightnessFilter(data, intensity * 0.1);
+      }
+      
+      function applyCoolFilter(data, intensity) {
+        applyHueRotateFilter(data, intensity * 0.5);
+        applySaturateFilter(data, -intensity * 0.2);
+        applyBrightnessFilter(data, -intensity * 0.05);
+      }
+      
+      function applySharpenFilter(data, intensity) {
+        applyContrastFilter(data, intensity * 0.5);
+        applySaturateFilter(data, intensity * 0.3);
+      }
+
+      // Load saved theme preference
+      document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        body.setAttribute('data-theme', savedTheme);
+        
+        // Restore panel states
+        document.querySelectorAll('.control-group').forEach(panel => {
+          const panelId = panel.querySelector('h3 span').textContent.trim();
+          const savedState = localStorage.getItem(`panel_${panelId}`);
+          if (savedState === 'collapsed') {
+            panel.classList.add('collapsed');
+          }
+        });
+      });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (!cropper) return;
+      
+      // Prevent shortcuts when typing in inputs
+      if (e.target.tagName === 'INPUT') return;
+      
+      switch(e.key.toLowerCase()) {
+        case 'r':
+          if (e.shiftKey) {
+            rotateLeft();
+          } else {
+            rotateRight();
+          }
+          break;
+        case 'h':
+          flipHorizontal();
+          break;
+        case 'v':
+          flipVertical();
+          break;
+        case '=':
+        case '+':
+          zoomIn();
+          break;
+        case '-':
+          zoomOut();
+          break;
+        case '0':
+          resetZoom();
+          break;
+        case 'escape':
+          resetImage();
+          break;
+        case 's':
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            download();
+          }
+          break;
+      }
+    });
   </script>
 </body>
 </html>
